@@ -1,2 +1,2 @@
-# ProgramacioAvan-ada1
+# Programacio Avançada
 Col·lecció pràctiques
