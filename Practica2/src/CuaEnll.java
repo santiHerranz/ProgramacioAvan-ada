@@ -81,8 +81,18 @@ public class CuaEnll<E> implements Cua<E> {
 	 */
 	public int quants(){
 		//TODO quants
-		return 0;
+		int acum = 0;
+		quants(acum, this.fi);
+		return acum;
 	}
+	
+	private void quants(int acum, Node<E> node){
+		if (node.seg!=null)
+			quants(acum, node.seg);
+		else
+			acum++;
+	}
+	
 	
 	public Object clone(){
 		return fi;
