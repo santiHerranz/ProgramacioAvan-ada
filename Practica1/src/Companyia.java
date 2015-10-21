@@ -350,7 +350,6 @@ public class Companyia {
 			}			
 			
 			
-			//TODO Afegir tots els atributs
 			return "Companyia: "+ getNom() 
 			+ "\n Adreça: "+ this.getAdreça() 
 			+ "\n\n----- quantsClients: "+ this.quantsClients("")

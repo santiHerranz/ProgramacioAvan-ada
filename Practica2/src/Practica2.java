@@ -62,7 +62,6 @@ public class Practica2 {
 			try {
 				a = cua.desEncuar();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

@@ -80,7 +80,7 @@ public class CuaEnll<E> implements Cua<E> {
 	 * la implementació ha de ser recursiva
 	 */
 	public int quants(){
-		//TODO
+		//TODO quants
 		return 0;
 	}
 	
@@ -94,7 +94,7 @@ public class CuaEnll<E> implements Cua<E> {
  * a objectes iguals (equals) i en el mateix ordre.
  */
 	public boolean equals(Object o) {
-		//TODO
+		//TODO CuaEnll.Equals
 		return false;
 	}
 	
