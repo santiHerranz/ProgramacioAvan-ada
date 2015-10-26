@@ -102,7 +102,10 @@ public class CuaEnll<E> implements Cua<E> {
  * dues cues són iguals si les seves corresponents seqüències enllaçades fan referència 
  * a objectes iguals (equals) i en el mateix ordre.
  */
-	public boolean equals(CuaEnll<E> o) {
+	public boolean equals(Object u) {
+		if (!(u instanceof CuaEnll<?>)) return false;
+
+		CuaEnll<E> o = (CuaEnll<E>)u;
 		if(this.quants()!= o.quants()) return false;
 		
 		boolean result = false;
