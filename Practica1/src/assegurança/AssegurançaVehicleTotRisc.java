@@ -1,4 +1,7 @@
+package assegurança;
+
 import java.util.Date;
+import persona.*;
 
 public class AssegurançaVehicleTotRisc extends AssegurançaVehicle {
 

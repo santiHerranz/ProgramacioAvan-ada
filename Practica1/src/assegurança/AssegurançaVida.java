@@ -1,5 +1,8 @@
+package assegurança;
+
 import java.util.Arrays;
 import java.util.Date;
+import persona.*;
 
 public class AssegurançaVida extends Assegurança {
 

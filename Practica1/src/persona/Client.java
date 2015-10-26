@@ -1,3 +1,4 @@
+package persona;
 
 public class Client extends Persona {
 
@@ -26,5 +27,13 @@ public class Client extends Persona {
 		return super.toString()
 		+"\n compteBancari: "+ this.getCompteBancari()
 		;
-	}		
+	}
+	
+	/* Equals */
+	
+	public boolean equals(Client c) {
+		if (c == null || this == null) return false;
+		if (this.getDNI() == c.getDNI()) return true;
+		else return false;
+	}	
 }

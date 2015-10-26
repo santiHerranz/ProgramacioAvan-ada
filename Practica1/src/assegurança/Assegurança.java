@@ -1,5 +1,8 @@
+package assegurança;
+
 import java.text.DateFormat;
 import java.util.Date;
+import persona.*;
 
 public class Assegurança {
 

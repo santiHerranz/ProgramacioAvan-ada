@@ -1,5 +1,8 @@
 import java.util.Date;
 import java.util.Map;
+import persona.*;
+import assegurança.*;
+import companyia.*;
 
 public class Practica1 {
 
