@@ -4,10 +4,8 @@ import edlineals.CuaEnll;
 public class Practica2extra {
 
 	public static void main(String[] args) throws Exception {
-
 		provaFrases();
 		provaCues();
-
 	}
 
 	static void provaFrases() throws Exception{
@@ -31,9 +29,7 @@ public class Practica2extra {
 				System.out.format("La frase \"%s\" NO és palíndrom\n", frase);
 			}
 		}
-		
 	}
-	
 	
 	static void provaCues(){
 		
@@ -42,6 +38,10 @@ public class Practica2extra {
 		cua1.encuar('A');
 		cua1.encuar('B');
 		cua1.encuar('C');
+		cua1.encuar('D');
+		cua1.encuar('e');
+		cua1.encuar('f');
+		cua1.encuar('g');
 
 		System.out.println("Cua: "+ cua1);
 		
@@ -52,7 +52,9 @@ public class Practica2extra {
 			System.out.println("cua1.equals(cua2): " + cua1.equals(cua2));
 			
 			cua2.buidar();
-			cua2.encuar('F');
+			cua2.encuar('e');
+			cua2.encuar('f');
+			cua2.encuar('g');
 			System.out.println("cua2: "+ cua2);
 			
 			System.out.println("cua1.equals(cua2): " + cua1.equals(cua2));
@@ -60,11 +62,8 @@ public class Practica2extra {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
-	
-	
+
 	static boolean esPalindrom(String frase) throws Exception{
 
 		if(frase.length()< 1) return false;
@@ -110,7 +109,6 @@ public class Practica2extra {
 			}
 		}
 		return palindrom;
-		
 	}
 	
 

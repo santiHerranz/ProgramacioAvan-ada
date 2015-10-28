@@ -10,7 +10,6 @@ public class Practica2 {
 		
 		Stack<Character> pila = new Stack<Character>();
 		CuaEnll<Character> cua = new CuaEnll<Character>();
-		cua.inicialitzar();
 		
 		System.out.println("Entra una frase caràcter a caràcter i indica la finalització amb ‘.’:");
 		char ch = reader.next().charAt(0);

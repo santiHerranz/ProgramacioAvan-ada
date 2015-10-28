@@ -2,6 +2,15 @@ package edlineals;
 
 public class CuaEnll<E> implements Cua<E> {
 
+	private class Node<K> {
+		private K inf;
+		private Node<K> seg;
+
+		Node(K data){
+			this.inf = data;
+		}
+	}
+	
 	// adreça al node final de la cua
 	private Node<E> fi;
 
@@ -12,8 +21,6 @@ public class CuaEnll<E> implements Cua<E> {
 
 	@Override
 	public void encuar(E value) {
-
-		//System.out.println(value);
 
 		Node<E> node = new Node<E>(value);
 
@@ -93,7 +100,7 @@ public class CuaEnll<E> implements Cua<E> {
 	}
 
 
-//TODO CuaEnll.Equals
+//CuaEnll.Equals
 /*
  * dues cues són iguals si les seves corresponents seqüències enllaçades fan referència
  * a objectes iguals (equals) i en el mateix ordre.
@@ -141,7 +148,10 @@ public class CuaEnll<E> implements Cua<E> {
 		return aux.toString();
 	}
 
-	// CuaEnll.Clonar
+// CuaEnll.Clonar
+/*
+ * S'ha de clonar la cua node a node enllaçant els nous nodes entre si
+ */
 	public CuaEnll<E> clone() throws CloneNotSupportedException {
 		CuaEnll<E> copia = new CuaEnll<E>();
 
@@ -155,19 +165,10 @@ public class CuaEnll<E> implements Cua<E> {
 				item = item.seg;
 			}
 		}
-
 	    return copia;
 	}
 
 
-	private class Node<K> {
-		private K inf;
-		private Node<K> seg;
-
-		Node(K data){
-			this.inf = data;
-		}
-	}
 
 
 }

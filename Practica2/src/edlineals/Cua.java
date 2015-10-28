@@ -11,7 +11,7 @@ public interface Cua<E> {
 
 	/**
 	 * Desencuar: elimina l’element del CAP de la cua.
-	 * @return      Node value
+	 * @return      Node
 	 */
 	E desEncuar() throws Exception;
 
