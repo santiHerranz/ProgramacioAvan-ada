@@ -1,18 +1,13 @@
 package edlineals;
-/**
- * @author Developer
- *
- * @param <E>
- */
+
 public interface Cua<E> {
 
-	
 	/**
 	 * Afegeix un element a la FI de la cua.
 	 * @param  node  Node a afegir
 	 * @return      void
 	 */
-	void encuar(E node); 
+	void encuar(E node);
 
 	/**
 	 * Desencuar: elimina l’element del CAP de la cua.
@@ -37,15 +32,15 @@ public interface Cua<E> {
 	*	CAP de la cua, sense extreure’l. Aquesta operació no és bàsica, es pot aconseguir
 	*	la mateixa funcionalitat fent crides a les operacions d’encuar i desencuar.
 	 * @return      Node
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	E consulta() throws Exception;
 
 	/**
-	* Buidar: elimina tot el contingut de la cua.	
+	* Buidar: elimina tot el contingut de la cua.
 	 * @return      void
 	 */
 	void buidar();
-	
-	
+
+
 }

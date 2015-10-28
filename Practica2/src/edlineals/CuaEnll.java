@@ -1,24 +1,20 @@
 package edlineals;
-/**
- * @author Developer
- *
- * @param <E>
- */
+
 public class CuaEnll<E> implements Cua<E> {
 
 	// adreça al node final de la cua
 	private Node<E> fi;
-	
+
 	public CuaEnll(){
 		super();
 		this.inicialitzar();
-	}	
-	
+	}
+
 	@Override
 	public void encuar(E value) {
 
 		//System.out.println(value);
-		
+
 		Node<E> node = new Node<E>(value);
 
 		// si la cua es buida
@@ -35,8 +31,8 @@ public class CuaEnll<E> implements Cua<E> {
 	@Override
 	public E desEncuar() throws Exception {
 		if(cuaBuida() == true) throw new Exception("La cua està buida");
-		
-		// treure el cap (el node següent al fi) 
+
+		// treure el cap (el node següent al fi)
 		Node<E> cap = this.fi.seg;
 		E value = cap.inf;
 
@@ -45,7 +41,7 @@ public class CuaEnll<E> implements Cua<E> {
 			this.fi = null;
 		else
 			this.fi.seg = cap.seg;
-		
+
 		return value;
 	}
 
@@ -76,7 +72,7 @@ public class CuaEnll<E> implements Cua<E> {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	/*
@@ -86,20 +82,20 @@ public class CuaEnll<E> implements Cua<E> {
 	public int quants(){
 		return quants(this.fi);
 	}
-	
+
 	private int quants( Node<E> node){
-		// 
+		//
 		if(node == null) return 0;
 		if (node.seg!=null && !node.seg.equals(this.fi))
 			return 1 + quants(node.seg);
 		else
 			return 1;
 	}
-	
-	
+
+
 //TODO CuaEnll.Equals
 /*
- * dues cues són iguals si les seves corresponents seqüències enllaçades fan referència 
+ * dues cues són iguals si les seves corresponents seqüències enllaçades fan referència
  * a objectes iguals (equals) i en el mateix ordre.
  */
 	public boolean equals(Object u) {
@@ -107,7 +103,7 @@ public class CuaEnll<E> implements Cua<E> {
 
 		CuaEnll<E> o = (CuaEnll<E>)u;
 		if(this.quants()!= o.quants()) return false;
-		
+
 		boolean result = false;
 		if(!this.cuaBuida() && !o.cuaBuida())  {
 			result = true;
@@ -121,12 +117,12 @@ public class CuaEnll<E> implements Cua<E> {
 				aux1 = aux1.seg;
 				aux2 = aux2.seg;
 			}
-		}		
+		}
 		return result;
 	}
-	
+
 	public String toString() {
-		
+
 		StringBuilder aux = new StringBuilder();
 
 		if(this.fi == null) return "";
@@ -144,7 +140,7 @@ public class CuaEnll<E> implements Cua<E> {
 
 		return aux.toString();
 	}
-	
+
 	// CuaEnll.Clonar
 	public CuaEnll<E> clone() throws CloneNotSupportedException {
 		CuaEnll<E> copia = new CuaEnll<E>();
@@ -159,11 +155,11 @@ public class CuaEnll<E> implements Cua<E> {
 				item = item.seg;
 			}
 		}
-		
-	    return copia;
-	}		
 
-	
+	    return copia;
+	}
+
+
 	private class Node<K> {
 		private K inf;
 		private Node<K> seg;
