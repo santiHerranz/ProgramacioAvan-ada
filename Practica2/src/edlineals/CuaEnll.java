@@ -117,7 +117,7 @@ public class CuaEnll<E> implements Cua<E> {
 			Node<E> aux1 = this.fi.seg;
 			Node<E> aux2 = o.fi.seg;
 			while(!aux1.equals(this.fi)){
-				if(aux1.inf != aux2.inf){
+				if(!aux1.inf.equals(aux2.inf)){
 					result = false;
 					break;
 				}
