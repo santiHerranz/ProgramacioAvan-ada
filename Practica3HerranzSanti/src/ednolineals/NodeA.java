@@ -41,24 +41,29 @@ public class NodeA<E> {
     //Per poder utilitzar el constructor copia
     @Override
     public Object clone(){
-       NodeA<E> copia = new NodeA<E>(this.esq,this.inf,this.dret);
+       NodeA<E> copia = new NodeA<E>(esq,inf,dret);
        if (esq != null)  copia.esq = (NodeA<E>) esq.clone();
        if (dret != null) copia.dret = (NodeA<E>) dret.clone();
        return copia;
     }
 
+    // inf - esq - dre
     void preordre(Cua<E> c) {
         try {c.encuar(inf);} catch (Exception ex) { }
-        if(esq!=null)esq.preordre(c);
-        if(dret!=null)dret.preordre(c);
+        if (esq!=null) esq.preordre(c);
+        if (dret!=null) dret.preordre(c);
     }
 
+    // esq - dret - inf
     void postordre(Cua<E> c) {
-        if(esq!=null)esq.postordre(c);
-        if(dret!=null)dret.postordre(c);
-        try {c.encuar(inf);} catch (Exception ex) { }
+        if (esq!=null) esq.postordre(c);
+        if (dret!=null) dret.postordre(c);
+        try {
+        	c.encuar(inf);
+        } catch (Exception ex) { }
     }
 
+    // esq - inf - dret
     void inordre(Cua<E> c) {
         if(esq!=null)esq.inordre(c);
         try {c.encuar(inf);} catch (Exception ex) { }

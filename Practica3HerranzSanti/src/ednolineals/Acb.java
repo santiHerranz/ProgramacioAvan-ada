@@ -11,11 +11,11 @@ public interface Acb<E extends Comparable<E>> extends Ab<E> {
 	 * @return retorna true si ha trobat l'element i l'ha esborrat
 	 * 		   ull!!!! retorna false en cas contrari 
 	 */
-	public boolean esborrar (E e);
+	public boolean esborrar (E e) throws ArbreException;
 
 	/*
 	 * @return retorna true si l’arbre conté un element com el donat com a paràmetre
 	 */
-	public boolean membre (E e);
+	public boolean membre (E e) throws ArbreException;
 	
 }

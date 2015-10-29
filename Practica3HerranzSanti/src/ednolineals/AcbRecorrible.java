@@ -1,12 +1,11 @@
 package ednolineals;
 
-import java.util.Queue;
 import edlineals.*;
 
 public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements Acb<E> {
 
 	private int ordre;
-	private Cua<String> cua;
+	private Cua<E> cua;
 	
 	public static final int ORDRE_ASCENDENT= 1789;
 	public static final int ORDRE_DESCENDENT= -7895;
@@ -31,7 +30,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
 	 * element en Inordre de l’arbre
 	 */
 	public void iniInordre () {
-		
+		if (!cua.cuaBuida()) cua.buidar();
+        cua = this.inordre();
 	}
 
 	/*
@@ -49,6 +49,13 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
 	}
 
 	public E segInordre () throws ArbreException {
+		if(cua.cuaBuida()) throw new ArbreException("Cua buida");
+		try {
+			return cua.desEncuar();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 		
 	}
@@ -74,9 +81,11 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
     public String toString() {
         String result = new String();
         Cua<E> c = this.inordre();
+        int i=0;
         while (!c.cuaBuida()) {
             try {
-				result += ((E)c.desEncuar()).toString() + "\n";
+				result += ++i +": "+ ((E)c.desEncuar()).toString() + "\n";
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
@@ -87,7 +96,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
 	
     
     
-    
+  	// Métodes d'un arbre de cerca binari
     
     public Cua<E> inordre() {
         Cua<E> c = new CuaEnll<E>();
@@ -97,11 +106,6 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
         return c;
     }    
     
-    
-    
-    
-	
-	// Métodes d'un arbre de cerca binari
 	
     public Cua<E> preordre() {
     	Cua<E> c = new CuaEnll<E>();
@@ -109,8 +113,18 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
             arrel.preordre(c);
         }
         return c;
-    }	
+    }
+    
+    public Cua<E> postordre() {
+        Cua<E> c = new CuaEnll<E>();
+        if (arrel != null) {
+            arrel.postordre(c);
+        }
+        return c;
+    }    
 
+    
+    
 	@Override
 	public void inserir(E e) throws ArbreException {
 		this.arrel = inserirRecursiu(this.arrel, e);
@@ -132,16 +146,57 @@ public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements
 	
 
 	@Override
-	public boolean esborrar(E e) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean membre(E e) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean esborrar(E e) throws ArbreException {
+        arrel = EsborrarRecursiu(arrel, (Comparable<E>)e);
+		return true;
 	}
 	
+    private NodeA<E> EsborrarRecursiu(NodeA<E> d, Comparable<E> c) throws ArbreException {
 
+        if (d == null) {
+            throw new ArbreException("l'element no hi és");
+        } else if (c.compareTo(d.inf) < 0) {
+            d.esq = EsborrarRecursiu(d.esq, c);
+        } else if (c.compareTo(d.inf) > 0) {
+            d.dret = EsborrarRecursiu(d.dret, c);
+        } else {
+            // Es una fulla
+            if (d.esq == null && d.dret == null) {
+                d = null; //esborra la referencia
+            } else if (d.esq != null && d.dret != null) {
+                // Dos fills
+            	NodeA<E> node = BuscarNodeMinim(d.dret);
+                d.inf = node.inf;
+                d.dret = node;
+            } else if (d.esq == null){
+                d = d.dret;  // Unic fill dret
+            } else {
+                d = d.esq; // Unic fill esquerre
+            }
+        }
+        return d;
+    }	
+
+    private NodeA<E> BuscarNodeMinim(NodeA<E> d) {
+        while (d.esq != null) {
+            d = d.esq;
+        }
+        return d;
+    }    
+
+	@Override
+	public boolean membre(E e) throws ArbreException {
+		return (MembreRecursiva(arrel, e));
+	}
+	
+    private boolean MembreRecursiva(NodeA<E> d, Comparable<E> c) throws ArbreException {
+        if (d == null) return false;
+        if (c.compareTo(d.inf) == 0) return true;
+        
+        if (c.compareTo(d.inf) < 0) 
+            return (MembreRecursiva(d.esq, c));
+        else if (c.compareTo(d.inf) > 0)
+            return (MembreRecursiva(d.dret, c));
+		return false;
+    }
 }

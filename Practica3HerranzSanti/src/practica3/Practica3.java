@@ -18,7 +18,7 @@ public class Practica3 {
 		String content = readFile(pathFile);
 //		System.out.println(content);
 		
-		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
+		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_DESCENDENT);
 		
 		StringTokenizer st = new StringTokenizer(content, "():.,; \t\n\r\f");
 	     while (st.hasMoreTokens()) {
@@ -35,6 +35,23 @@ public class Practica3 {
 		
 			System.out.println("Paraules: "+ arbre.cardinalitat());
 			System.out.println(""+ arbre.toString());
+			
+			
+			try {
+				System.out.println("membre HANDWRITING: "+ arbre.membre("HANDWRITING"));
+				System.out.println("membre IDEALITY: "+ arbre.membre("IDEALITY"));
+
+				
+				arbre.esborrar("ACQUISITION");
+				
+				System.out.println("membre ACQUISITION: "+ arbre.membre("ACQUISITION"));
+
+				System.out.println(""+ arbre.toString());
+				
+			} catch (ArbreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		
 	}
