@@ -1,0 +1,11 @@
+Biometric writer recognition is a very active field of research that has produced a considerable body of
+ scientific work and papers over the last decades. Signature verification has been one of the most favoured
+ approaches while others, such as text-dependent recognition, have attracted very little attention due to a 
+perceived lack of practical applicability. This dissertation is circumscribed to the particular field of online
+ text-dependent writer recognition, based on short sequences of text, a field where the number of relevant 
+reference is really scarce. In this context, online means that not only the static images of the handwriting are 
+available but also their dynamic dimension, that is, data is available as a function of time. What is more, thanks
+ to modern acquisition devices, other time-dependent information is also available: the pressure exerted while
+ writing, the angles of the writing device with respect to the horizontal plane and with respect to the vertical 
+axis, and even the trajectories described while not exerting any pressure on the writing surface, when the hand 
+moves in the air while transitioning from one stroke to the next (in-air trajectories made up of pen-up strokes).
