@@ -8,6 +8,9 @@ import java.util.StringTokenizer;
 import ednolineals.*;
 
 public class Practica3 {
+	
+
+	
 
 	public static void main(String[] args) {
 		System.out.println("Practica3");

@@ -2,10 +2,9 @@ package ednolineals;
 
 import edlineals.*;
 
-public class AcbRecorrible<E extends Comparable<E>> extends AbEnll<E> implements Acb<E> {
+public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implements Acb<E> {
 
 	private int ordre;
-	private Cua<E> cua;
 	
 	public static final int ORDRE_ASCENDENT= 1789;
 	public static final int ORDRE_DESCENDENT= -7895;
