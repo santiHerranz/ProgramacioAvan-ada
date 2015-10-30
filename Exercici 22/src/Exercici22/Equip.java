@@ -1,8 +1,16 @@
 package Exercici22;
-import ednolineals.*;
 
-public class Equip implements Comparable{
+import edlineals.Cua;
+import ednolineals.Acb;
+import ednolineals.AcbEnll;
+import ednolineals.Comparable;
 
+public class Equip implements Comparable<Equip>{
+	
+	
+	private int codi; //identificador
+	private String nom;
+	
 	private class Node{
 		Jugador jug;
 		Node seg;
@@ -11,10 +19,7 @@ public class Equip implements Comparable{
 			seg=seguent;
 			} //fi constructor
 	} // fi classe privada
-	
-	
-	private int codi; //identificador
-	private String nom;
+
 	private Node jugadors; // seqüència enllaçada lineal dels jugadors fitxats per l’equip.
 	// NO TÉ NODE CAPÇALERA
 	private int quants; //cardinalitat de la seqüència anterior
@@ -23,25 +28,83 @@ public class Equip implements Comparable{
 		/* de moment no té jugadors assignats
 		 * 
 		 * TODO Solució Exercici 3.1 : Constructor Equip*/
+		this.nom = nom;
+		this.codi = codi;
+		jugadors = null;
+		quants = 0;
 	}
-	public Equip(String nom, Acb<Jugador> jugadors, int codi){
+	public Equip(String nom, Acb<Jugador> arbreJugadors, int codi){
 		/* els jugadors de lequip ens arriben dins dun magatzem Acb, el constructor sha 
 		 * dencarregar de posar-los en el magatzem de la classe que té aquesta funcionalitat. 
 		 * Som usuaris de la interfície Acb
 		 * 
 		 * TODO Solució Exercici 3.2 : Constructor Equip */
-
+		this.nom = nom;
+		this.codi = codi;
+		
+		if (arbreJugadors != null) {
+			try {
+				
+				AcbEnll<Jugador> acb = (AcbEnll<Jugador>)arbreJugadors;
+				Cua<Jugador> cua = acb.inordre();
+				
+				Jugador j = null;
+				try{
+					j = cua.desEncuar();
+				} catch(Exception e){}
+				
+				while(j!= null) {
+					try{
+						j = cua.desEncuar();
+						addJugador(j);
+					} catch(Exception e){
+						j=null;
+					}
+				}
+				
+					
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}		
+		
+		
+		
 	}
 	public int getCodi(){ return codi;}
 	public String getNom(){ return nom;}
 	public int getQuantsJugadors(){ return quants;}
 
+	
+	
+	private Node onEs(Jugador j){
+		// la seqüència no és buida s’ha comprovat abans de fer la crida
+		boolean trobat=false;
+		Node aux=jugadors;
+		while (!trobat & aux.seg!=null){
+			trobat=aux.seg.jug.getNom().equals(j.getNom());
+			if (!trobat) aux=aux.seg;
+		}
+		if (trobat) return aux;
+		else return null;
+	}	
+	
 	public void addJugador(Jugador jug) throws Exception { 		
 		/* Afegeix un jugador a lequip. Cal controlar la repetició
 		 * 
 		 * TODO Solució Exercici 3.3 : addJugador 
 		 */
-		Node n = new Node(jug, jugadors);
+		if (jugadors!=null && jugadors.jug.getNom().equals(jug.getNom()))
+				throw new Exception("Repe");
+		Node on=null;
+		if (jugadors!=null) 
+			on=onEs(jug); //mètode privat que afegeixo
+		if (on != null)
+			throw new Exception("Ja hi és");
+		else { //afegim davant de tot
+			jugadors = new Node(jug, jugadors);
+			quants++;
+		}
 	}
 	
 	public void addJugador(String nom, String nacionalitat) throws Exception {
@@ -49,18 +112,45 @@ public class Equip implements Comparable{
 		 * 
 		 * TODO Solució Exercici 3.4 : addJugador 
 		 */
-		
-		}
+		Jugador jug = new Jugador(nom);
+		jug.addNacionalitat(nacionalitat);
+		this.addJugador(jug);
+	}
+	
 	public void remJugador(Jugador jug) throws Exception{
 		/* Afegeix un jugador a lequip. Cal controlar la repetició
 		 * 
 		 * TODO Solució Exercici 3.5 : remJugador 
 		 */
-}
+		--quants;
+	}
+	
+
+	
+	
 	
 	public boolean MenorQue(Comparable c){
-	if (c instanceof Equip) return (codi<((Equip) c).codi);else return false; }
+		if (c instanceof Equip) return (codi<((Equip) c).codi);else return false; 
+	}
+	
 	public boolean MajorQue(Comparable c){
-	if (c instanceof Equip) return (codi>((Equip) c).codi);else return false;}
+		if (c instanceof Equip) return (codi>((Equip) c).codi);else return false;
+	}
 
+	public String toString(){
+		
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(nom);
+		stringBuilder.append("\n");
+		Node item = jugadors;
+		stringBuilder.append("+ Jugadors ("+ this.quants +")\n");
+		while(item != null) {
+			stringBuilder.append(" "+ item.jug +"\n");
+			item = item.seg;
+		}
+		
+		return stringBuilder.toString();
+	}	
+	
 } // fi classe

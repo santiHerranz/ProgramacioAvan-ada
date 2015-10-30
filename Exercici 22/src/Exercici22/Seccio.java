@@ -1,18 +1,20 @@
 package Exercici22;
+
 import ednolineals.*;
+import ednolineals.Comparable;
 
 public class Seccio {
 private String nom;
-private Acb<Equip> equips; //magatzem dels equips d’aquesta secció
+private Acb equips; //magatzem dels equips d’aquesta secció
 public Seccio(String nom){
-	equips=(Acb<Equip>) new AcbEnll<Equip>(); 
+	equips = new AcbEnll(); 
 	this.nom=nom; 
 	}
 public void addEquip(Equip p) throws Exception{ 
-	equips.inserir(p);
+	equips.Inserir((Comparable) p);
 }
 public void remEquip(Equip p) throws Exception{ 
-	equips.esborrar(p);
+	equips.Esborrar(p);
 }
 
 
@@ -28,7 +30,7 @@ public String equipMesJugadors(){
 	 * 1.2 fem recorregut inordre per exemple, es indiferent
 	 * 2. guardar el nom de l'equip que te més jugadors
 	 * */
-	return ((AcbEnll<Equip>) equips).equipMesJugadors();
+	return ((AcbEnll) equips).equipMesJugadors().getNom();
 }
 
 	public boolean equals(Object o){
@@ -49,4 +51,9 @@ public String equipMesJugadors(){
 		 * */
 		return "";
 	}
+	
+	public String toString(){
+		return nom;
+	}
+	
 }

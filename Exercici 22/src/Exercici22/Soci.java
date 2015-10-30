@@ -1,5 +1,6 @@
 package Exercici22;
 import edlineals.*;
+import ednolineals.Comparable;
 
 public class Soci implements Comparable{
 private long numeroSoci; //identificador
@@ -74,5 +75,9 @@ public boolean MenorQue(Comparable c){
 	if (c instanceof Soci) return (numeroSoci > ((Soci) c).numeroSoci);
 	else return false; 
 }
+
 	
+	public String toString(){
+		return nom;
+	}	
 }

@@ -1,21 +1,28 @@
 package ednolineals;
 
-public interface Acb<E> extends Ab<E> {
+public interface Acb<E>{
 
-	/*
-	 * llença una excepció si l’element que s’insereix està repetit
-	 */
-	public void inserir (E p) throws ArbreException;
+	void Inserir (Comparable<E> jugador) throws ArbreException;
+	void Esborrar (Comparable<E> e) throws ArbreException;
+	boolean Membre (Comparable<E> e);
 	
 	/*
-	 * @return retorna true si ha trobat l'element i l'ha esborrat
-	 * 		   ull!!!! retorna false en cas contrari 
+	 * cal llençar una excepció si es demana l’arrel d’un arbre buit
 	 */
-	public boolean esborrar (E e) throws ArbreException;
+	Comparable<E> arrel () throws ArbreException;
 
 	/*
-	 * @return retorna true si l’arbre conté un element com el donat com a paràmetre
+	 * Exception si l’arbre this és buit. Si no té fill esquerre retorna un arbre buit.
 	 */
-	public boolean membre (E e) throws ArbreException;
+	Acb<E> fillEsquerre()throws ArbreException;
+
+	/*
+	 * Excepcion si l’arbre this és buit. Si no té fill dret retorna una arbre buit.
+	 */
+	Acb<E> fillDret()throws ArbreException;
+
+	boolean ArbreBuit ();
+	void Buidar();
+
 	
 }

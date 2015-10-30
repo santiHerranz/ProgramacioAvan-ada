@@ -1,11 +1,15 @@
 package Exercici22;
 
-public class Jugador implements Comparable{
+import ednolineals.Comparable;
+
+public class Jugador implements Comparable<Jugador> {
 private String nom;
 private String nacionalitats[]; //màxim 3
+
 public Jugador(String nom){
-this.nom=nom;
-String []p={null,null,null}; nacionalitats=p;
+	this.nom=nom;
+	String []p={null,null,null}; 
+	nacionalitats=p;
 }
 public String getNom(){ return nom;}
 
@@ -25,7 +29,7 @@ public void addNacionalitat(String a) throws Exception{
 	if (posicion != -1) throw new Exception("La nacionalitat ja hi és.");
 
 	int posicioLliure = this.posicioLliure();
-	if (posicioLliure != -1) throw new Exception("La nacionalitat ja està plena.");
+	if (posicioLliure == -1) throw new Exception("La nacionalitat ja està plena.");
 
 	this.nacionalitats[posicioLliure] = a;
 }
@@ -33,7 +37,8 @@ public void addNacionalitat(String a) throws Exception{
 private int hiEsNacionalitat(String nom) {
 	int i = 0;
 	while (i < this.nacionalitats.length) {
-		if (this.nacionalitats[i].equals(nom)) return i;
+		if (this.nacionalitats[i] == null) ++i;
+		else if (this.nacionalitats[i].equals(nom)) return i;
 		else ++i;
 	}
 	return -1;
@@ -62,6 +67,12 @@ else return false;
 }
 
 
-
+public String toString(){
+	StringBuilder stringBuilder = new StringBuilder();
+	stringBuilder.append(nom);
+	stringBuilder.append(" ");
+	stringBuilder.append(String.join(",",nacionalitats));
+	return stringBuilder.toString();
+}	
 
 } //fi classe
