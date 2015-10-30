@@ -1,11 +1,11 @@
 package ednolineals;
 
-public interface Acb<E extends Comparable<E>> extends Ab<E> {
+public interface Acb<E> extends Ab<E> {
 
 	/*
 	 * llença una excepció si l’element que s’insereix està repetit
 	 */
-	public void inserir (E e) throws ArbreException;
+	public void inserir (E p) throws ArbreException;
 	
 	/*
 	 * @return retorna true si ha trobat l'element i l'ha esborrat

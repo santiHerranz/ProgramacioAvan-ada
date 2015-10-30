@@ -1,3 +1,4 @@
+package Exercici22;
 
 public class Rebut {
 private int identificador;

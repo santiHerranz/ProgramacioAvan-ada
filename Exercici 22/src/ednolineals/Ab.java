@@ -5,7 +5,7 @@ public interface Ab<E> {
 	/*
 	 * cal llençar una excepció si es demana l’arrel d’un arbre buit
 	 */
-	E arrel () throws ArbreException;
+	Comparable<E> arrel () throws ArbreException;
 
 	/*
 	 * Exception si l’arbre this és buit. Si no té fill esquerre retorna un arbre buit.

@@ -1,3 +1,4 @@
+package Exercici22;
 
 public class SociAmbAbonament extends Soci{
 private Seccio abonada;
