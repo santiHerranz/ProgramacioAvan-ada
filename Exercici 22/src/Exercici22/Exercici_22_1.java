@@ -24,6 +24,18 @@ public class Exercici_22_1 {
 		
 		Jugador j1 = new Jugador(" Jordi 31");
 		j1.addNacionalitat("Catalunya");
+		j1.addNacionalitat("Alemanya");
+		j1.addNacionalitat("Andorra");
+		try{
+			j1.addNacionalitat("Catalunya");
+		} catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		try{
+			j1.addNacionalitat("Suecia");
+		} catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 		jugs.Inserir(j1);
 
 		
