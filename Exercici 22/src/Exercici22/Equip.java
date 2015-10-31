@@ -34,7 +34,7 @@ public class Equip implements Comparable<Equip>{
 		quants = 0;
 	}
 	public Equip(String nom, Acb<Jugador> arbreJugadors, int codi){
-		/* els jugadors de lequip ens arriben dins dun magatzem Acb, el constructor sha 
+		/* els jugadors de l'equip ens arriben dins dun magatzem Acb, el constructor sha 
 		 * dencarregar de posar-los en el magatzem de la classe que té aquesta funcionalitat. 
 		 * Som usuaris de la interfície Acb
 		 * 
@@ -43,29 +43,17 @@ public class Equip implements Comparable<Equip>{
 		this.codi = codi;
 		
 		if (arbreJugadors != null) {
-			try {
-				
-				AcbEnll<Jugador> acb = (AcbEnll<Jugador>)arbreJugadors;
-				Cua<Jugador> cua = acb.inordre();
-				
-				Jugador j = null;
-				try{
+
+			AcbEnll<Jugador> acb = (AcbEnll<Jugador>)arbreJugadors;
+			Cua<Jugador> cua = acb.inordre();
+
+			try{
+				Jugador j = cua.desEncuar();
+				while(j != null) {
+					addJugador(j);
 					j = cua.desEncuar();
-				} catch(Exception e){}
-				
-				while(j!= null) {
-					try{
-						j = cua.desEncuar();
-						addJugador(j);
-					} catch(Exception e){
-						j=null;
-					}
 				}
-				
-					
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			} catch(Exception e){}
 		}		
 		
 		
@@ -76,9 +64,14 @@ public class Equip implements Comparable<Equip>{
 	public int getQuantsJugadors(){ return quants;}
 
 	
-	
+	/* 
+	 * TODO Solució Exercici 3.3 : addJugador
+	 *  Esquema de cerca amb auxiliar per no perdre la referencia a la cua enllaçada
+	 *  Atenció: retorna el node anterior al node trobat
+	 */	
 	private Node onEs(Jugador j){
 		// la seqüència no és buida s’ha comprovat abans de fer la crida
+	
 		boolean trobat=false;
 		Node aux=jugadors;
 		while (!trobat & aux.seg!=null){
@@ -122,7 +115,18 @@ public class Equip implements Comparable<Equip>{
 		 * 
 		 * TODO Solució Exercici 3.5 : remJugador 
 		 */
-		--quants;
+		if (jugadors==null) throw new Exception("No hi és");
+		if (jugadors.jug.getNom().equals(jug.getNom())){ // Mirar si es el primer
+			jugadors=jugadors.seg;
+			quants--;
+			return;
+		}
+		Node a = onEs(jug); // Trobar el node
+		if (a!=null){ 
+			a.seg=a.seg.seg; // desenganxar els nodes
+			quants--;
+		}
+		else throw new Exception("“No hi és");
 	}
 	
 

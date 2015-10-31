@@ -242,4 +242,22 @@ void inordre(Cua c){
 		} //fi else
 	}	
 
+	
+	public boolean equals(Object o){ // A la classe AcbEnll
+		if (!(o instanceof AcbEnll)) return false;
+		AcbEnll p=(AcbEnll)o;
+		if (arrel==null && p.arrel== null) return true;
+		if (arrel==null && p.arrel!= null || arrel!=null && p.arrel==null) return false;
+		//Sabem que els 2 són diferents de null, no són buits
+		if (((Exercici22.Seccio)arrel.inf).toString() != ((Exercici22.Seccio)p.arrel.inf).toString() ) return false;
+		
+		try {
+			return ((AcbEnll)fillDret()).equals(p.fillDret()) && ((AcbEnll)fillEsquerre()).equals(p.fillEsquerre());
+		} catch (ArbreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+		}	
+	
 }

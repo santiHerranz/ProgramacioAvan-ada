@@ -56,14 +56,14 @@ private int posicioLliure() {
 
 @Override
 public boolean MenorQue(Comparable c){
-if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)<0);
-else return false; 
+	if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)<0);
+	else return false; 
 }
 
 @Override
 public boolean MajorQue(Comparable c){
-if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)>0);
-else return false; 
+	if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)>0);
+	else return false; 
 }
 
 

@@ -22,7 +22,7 @@ public void addQuota(Rebut t){
 	 * 
 	 * TODO Solució Exercici 1.1: addQuota
 	 * Encuar directament el rebut a la cua 
-	 * Com que el mètode no pot generar excepcions, fer el tractament 
+	 * Com que el mètode no pot generar excepcions, hem de fer el tractament 
 	 */
 	try{quotes.encuar(t);}
 	catch(Exception e){}
@@ -39,8 +39,9 @@ public void remQuota(Rebut t) throws Exception{
 	boolean trobat = false;
 	Cua<Rebut> c = new CuaEnll<Rebut>(); //Cua de support
 	while (!quotes.cuaBuida()){ // Recurregut fins a l'ultim enllaçat
-		Rebut aux= (Rebut)(quotes.desEncuar()); // element desencuat
-		if (aux.equals(t)) trobat=true; // no encuem l'element a la cua de suport
+		Rebut aux= (Rebut)(quotes.desEncuar()); // element desencuat 
+		if (aux.equals(t)) // FORÇAR casting per aplicar el mètode equals redefinit a la classe Rebut
+				trobat=true; // no encuem l'element a la cua de suport
 		else c.encuar(aux); // encuem tots els altres
 	}
 	quotes=c; // canviem la referencia

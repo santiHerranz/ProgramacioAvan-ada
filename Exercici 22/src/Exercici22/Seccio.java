@@ -4,8 +4,9 @@ import ednolineals.*;
 import ednolineals.Comparable;
 
 public class Seccio {
+	
 private String nom;
-private Acb equips; //magatzem dels equips d’aquesta secció
+Acb equips; //magatzem dels equips d’aquesta secció
 public Seccio(String nom){
 	equips = new AcbEnll(); 
 	this.nom=nom; 
@@ -40,7 +41,9 @@ public String equipMesJugadors(){
 		 * 
 		 * TODO Solució Exercici 4.2 : equals
 		 * */
-		return false;
+		if (!(o instanceof Seccio)) return false;
+		return nom.equals(((Seccio)o).nom) && ((AcbEnll)equips).equals(((Seccio)o).equips);
+	
 	}
 
 	public String trobaNomEquipMajorCodi() throws Exception{ 
