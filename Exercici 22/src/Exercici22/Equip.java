@@ -24,28 +24,28 @@ public class Equip implements Comparable<Equip>{
 	// NO TÉ NODE CAPÇALERA
 	private int quants; //cardinalitat de la seqüència anterior
 
-	public Equip(String nom, int codi){
-		/* de moment no té jugadors assignats
-		 * 
-		 * TODO Solució Exercici 3.1 : Constructor Equip*/
+	/* de moment no té jugadors assignats
+	 * 
+	 * TODO Solució Exercici 3.1 : Constructor Equip*/
+	public Equip(String nom, int codi){ // Class Equip
 		this.nom = nom;
 		this.codi = codi;
 		jugadors = null;
 		quants = 0;
 	}
-	public Equip(String nom, Acb<Jugador> arbreJugadors, int codi){
-		/* els jugadors de l'equip ens arriben dins dun magatzem Acb, el constructor sha 
-		 * dencarregar de posar-los en el magatzem de la classe que té aquesta funcionalitat. 
-		 * Som usuaris de la interfície Acb
-		 * 
-		 * TODO Solució Exercici 3.2 : Constructor Equip */
-		this.nom = nom;
-		this.codi = codi;
+	
+	/* els jugadors de l'equip ens arriben dins dun magatzem Acb, el constructor sha 
+	 * dencarregar de posar-los en el magatzem de la classe que té aquesta funcionalitat. 
+	 * Som usuaris de la interfície Acb
+	 * 
+	 * TODO Solució Exercici 3.2 : Constructor Equip */
+	public Equip(String nom, Acb<Jugador> arbreJugadors, int codi){ // Class Equip
+		this(nom, codi);
 		
 		if (arbreJugadors != null) {
 
 			AcbEnll<Jugador> acb = (AcbEnll<Jugador>)arbreJugadors;
-			Cua<Jugador> cua = acb.inordre();
+			Cua<Jugador> cua = acb.preordre();
 
 			try{
 				Jugador j = cua.desEncuar();
@@ -55,10 +55,8 @@ public class Equip implements Comparable<Equip>{
 				}
 			} catch(Exception e){}
 		}		
-		
-		
-		
 	}
+
 	public int getCodi(){ return codi;}
 	public String getNom(){ return nom;}
 	public int getQuantsJugadors(){ return quants;}
@@ -132,13 +130,14 @@ public class Equip implements Comparable<Equip>{
 
 	
 	
-	
-	public boolean MenorQue(Comparable c){
-		if (c instanceof Equip) return (codi<((Equip) c).codi);else return false; 
+	@Override	
+	public boolean MenorQue(Comparable<Equip> c){
+		if (c instanceof Equip) return (codi < ((Equip)c).codi);else return false; 
 	}
 	
-	public boolean MajorQue(Comparable c){
-		if (c instanceof Equip) return (codi>((Equip) c).codi);else return false;
+	@Override
+	public boolean MajorQue(Comparable<Equip> c){
+		if (c instanceof Equip) return (codi > ((Equip)c).codi);else return false;
 	}
 
 	public String toString(){
@@ -147,14 +146,15 @@ public class Equip implements Comparable<Equip>{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(nom);
 		stringBuilder.append("\n");
-		Node item = jugadors;
 		stringBuilder.append("+ Jugadors ("+ this.quants +")\n");
+		Node item = jugadors;
 		while(item != null) {
-			stringBuilder.append(" "+ item.jug +"\n");
+			stringBuilder.append(" "+ item.jug);
 			item = item.seg;
 		}
-		
 		return stringBuilder.toString();
-	}	
+	}
+
+
 	
 } // fi classe

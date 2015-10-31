@@ -4,7 +4,7 @@ import Exercici22.Equip;
 import edlineals.Cua;
 import edlineals.CuaEnll;
 
-public class AcbEnll<E> implements Acb  {
+public class AcbEnll<E> implements Acb<E>  {
 
 	
 	//Atributs
@@ -14,7 +14,7 @@ public class AcbEnll<E> implements Acb  {
 	public AcbEnll(){
 		this.arrel = null;
 	}
-	public AcbEnll(Comparable e){
+	public AcbEnll(Comparable<E> e){
 		this.arrel = new NodeA();
 		this.arrel.setInf(e);
 	}
@@ -30,28 +30,31 @@ public class AcbEnll<E> implements Acb  {
 
 	// Métodes d'un arbre
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Comparable<E> arrel() throws ArbreException {
 		if (this.arrel == null) throw new ArbreException("L'arbre és buit");
-		return (Comparable) this.arrel.getInf();
+		return (Comparable<E>) this.arrel.inf;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Acb<E> fillEsquerre() throws ArbreException {
 		if(arrel== null) throw new ArbreException("L'arbre és buit, no té fills!");
 //		AcbEnll<E> resultat = new AcbEnll<E>();
 //		resultat.arrel = this.arrel.esq;
 //		return resultat;
-		return arrel.esq;
+		return (Acb<E>)arrel.esq;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Acb<E> fillDret() throws ArbreException {
 		if(arrel == null) throw new ArbreException("L'arbre és buit, no té fills!");
 //		AcbEnll<E> resultat = new AcbEnll<E>();
 //		resultat.arrel = this.arrel.dret;
 //		return resultat;
-		return arrel.dret;
+		return (Acb<E>)arrel.dret;
 	}
 
 	@Override
@@ -64,10 +67,7 @@ public class AcbEnll<E> implements Acb  {
 		arrel = null;
 	}	
 	
-	
-	
-	public Cua<E> cua;
-	
+	// RECORREGUTS	
 	
 	public Cua<E> preordre(){
 	/* retorna sobre la cua el recorregut en preordre de l’arbre donat, es llença una
@@ -95,19 +95,36 @@ public class AcbEnll<E> implements Acb  {
 	}
 	
 	
-void preordre(Cua c){
-	try{c.encuar(arrel.inf);}catch(Exception e){}
+/* preordre ()
+ * 1. arrel
+ * 2. fill esquerra
+ * 3. fill dreta	
+ */
+void preordre(Cua<E> c){
+	try{c.encuar((E) arrel.inf);}catch(Exception e){}
 	if (arrel.esq!=null) arrel.esq.preordre(c);
 	if (arrel.dret!=null) arrel.dret.preordre(c);
 }
-void postordre(Cua c){
+
+/* postordre (ascendent)
+ * 1. fill esquerra
+ * 2. fill dreta
+ * 3. arrel 
+ */
+void postordre(Cua<E> c){
 	if (arrel.esq!=null) arrel.esq.postordre(c);
 	if (arrel.dret!=null) arrel.dret.postordre(c);
-	try{c.encuar(arrel.inf);}catch(Exception e){}
+	try{c.encuar((E)arrel.inf);}catch(Exception e){}
 }
-void inordre(Cua c){
+
+/* inordre
+ * 1. fill esquerra
+ * 2. arrel
+ * 3. dreta
+ */
+void inordre(Cua<E> c){
 	if (arrel.esq!=null) arrel.esq.inordre(c);
-	try{c.encuar(arrel.inf);}catch(Exception e){}
+	try{c.encuar((E)arrel.inf);}catch(Exception e){}
 	if (arrel.dret!=null) arrel.dret.inordre(c);
 }	
 
@@ -117,18 +134,18 @@ void inordre(Cua c){
 	 * llença una excepció si l’element que s’insereix està repetit
 	 */
 	@Override
-	public void Inserir (Comparable p) throws ArbreException{
+	public void Inserir (Comparable<E> p) throws ArbreException{
 		this.arrel = inserirRecursiu(this.arrel, p);
 	}
-	private NodeA inserirRecursiu(NodeA a, Comparable e) throws ArbreException {
+	private NodeA inserirRecursiu(NodeA a, Comparable<E> e) throws ArbreException {
 		if(a == null) {
 			a = new NodeA(e);
 		} else {
 			if (e.MenorQue(a.inf)) {
-				if(a.esq == null) a.esq = new AcbEnll();
+				if(a.esq == null) a.esq = new AcbEnll<E>();
 				a.esq.arrel = inserirRecursiu(a.esq.arrel, e);
 			} else if (e.MajorQue(a.inf)) {
-				if(a.dret == null) a.dret = new AcbEnll();
+				if(a.dret == null) a.dret = new AcbEnll<E>();
 				a.dret.arrel = inserirRecursiu(a.dret.arrel, e);
 			} else {
 				throw new ArbreException("Repetit " + e);
@@ -143,6 +160,7 @@ void inordre(Cua c){
 	 */
 	@Override
 	public void Esborrar (Comparable e) throws ArbreException {
+		if (this.arrel==null) throw new ArbreException("L'arbre es buit");
 		this.arrel=esborrarRecursiu(this.arrel,e);
 		
 	}
@@ -156,17 +174,12 @@ void inordre(Cua c){
 		if (d.esq!=null && d.dret!=null)
 		{ //sabem segur que d no es null
 		d.inf = BuscarMinim(d.dret);
-		d.dret=EsborrarMinim(d.dret);
+		d.dret = EsborrarMinim(d.dret);
 		}
 		else if (d.esq==null && d.dret==null) d=null;
 		else if (d.esq==null) d=d.dret.arrel;
 		else d=d.esq.arrel;
 		return d;		
-	}
-	
-	private static AcbEnll EsborrarMinim( AcbEnll d){
-		if (d.arrel.esq==null) { d=d.arrel.dret; return d;}
-		else {d.arrel.esq=EsborrarMinim(d.arrel.esq); return d;}
 	}
 	
 	private static Comparable BuscarMinim(AcbEnll d){
@@ -175,7 +188,11 @@ void inordre(Cua c){
 			d=d.arrel.esq;
 		return (Comparable)d.arrel.inf;
 	}	
-	
+		
+	private static AcbEnll EsborrarMinim( AcbEnll d){
+		if (d.arrel.esq==null) { d=d.arrel.dret; return d;}
+		else {d.arrel.esq=EsborrarMinim(d.arrel.esq); return d;}
+	}
 	
 	
 
@@ -195,29 +212,33 @@ void inordre(Cua c){
 		}	
 	
 	
-	/* TODO Solució Exercici 4 : equipMesJugadors (AcbEnll)*/
-	public String nomEquipMesJugadors() {
+	/* TODO Solució Exercici 4.1 : equipMesJugadors
+	 * tornar el nom de l'equip que te més jugadors
+	 * */
+	public String nomEquipMesJugadors() {// Class AcbEnll.java
 		return (this.equipMesJugadors()).getNom();
 	}
 
 
-	public Equip equipMesJugadors(){ 
+	public Equip equipMesJugadors(){ // Class AcbEnll.java
 		if (arrel == null) return null;
-		
 		/* Els equips dins de l’arbre NO estan ordenats pel nombre de jugadors de l’equip, 
 		 * hi estan pel seu codi, per tant no podem usar l’ordenació entre subarbre dret 
 		 * i esquerra que hi ha dins d’un ACB
 		 * 
-		 * TODO Solució Exercici 4 : equipMesJugadors (AbEnll - NodeA)
-		 * Crida recursiva
+		 * TODO Solució Exercici 4.1 : equipMesJugadors 
+		 * Trobar l'equip amb mes jugadors dins a l'arbre de cerca binari
+		 * 1. Fer recorregut complert i obtenir quants jugadors té cada equip
+		 * 1.1 començem amb l'arrel
+		 * 1.2 fem recorregut inordre per exemple, es indiferent
 		 * */
 		Equip esqE=null, dretE=null;
 
 		int quants=((Equip) this.arrel.inf).getQuantsJugadors();
 		if (this.arrel.esq!=null)
-			esqE= (Equip) this.arrel.esq.equipMesJugadors();
+			esqE= (Equip) this.arrel.esq.equipMesJugadors(); // crida recursiva
 		if (this.arrel.dret!=null)
-			dretE= (Equip) this.arrel.dret.equipMesJugadors();
+			dretE= (Equip) this.arrel.dret.equipMesJugadors(); // crida recursiva
 
 		if (esqE==null && dretE==null)
 			return (Equip)this.arrel.inf;
@@ -241,8 +262,28 @@ void inordre(Cua c){
 		else return dretE;
 		} //fi else
 	}	
-
 	
+	
+	
+	
+	/* 
+	 * TODO Solució Exercici 4.3 : trobaNom
+	 * */	
+	public String trobaNomMajorCodi()  throws Exception { //classe AcbEnll
+		if (arrel == null) throw new Exception("No hi ha equips");
+		//s’ha d’anar cap a la dreta. Així aprofitem l’ordenació!!!
+		if (arrel.dret==null) return ((Equip)arrel.inf).getNom();
+		AcbEnll<E> aux = arrel.dret;
+		while (aux.arrel.dret!=null) aux=aux.arrel.dret;
+		return ((Equip)aux.arrel.inf).getNom();
+	}	
+	
+	
+	
+
+	/* 
+	 * TODO Solució Exercici 4.2 : equals
+	 * */	
 	public boolean equals(Object o){ // A la classe AcbEnll
 		if (!(o instanceof AcbEnll)) return false;
 		AcbEnll p=(AcbEnll)o;
@@ -254,10 +295,9 @@ void inordre(Cua c){
 		try {
 			return ((AcbEnll)fillDret()).equals(p.fillDret()) && ((AcbEnll)fillEsquerre()).equals(p.fillEsquerre());
 		} catch (ArbreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
-		}	
+	}	
 	
 }

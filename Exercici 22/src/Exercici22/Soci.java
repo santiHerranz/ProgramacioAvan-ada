@@ -2,7 +2,7 @@ package Exercici22;
 import edlineals.*;
 import ednolineals.Comparable;
 
-public class Soci implements Comparable{
+public class Soci implements Comparable<Soci>{
 private long numeroSoci; //identificador
 private String nom;
 private Cua<Rebut> quotes; //conté objectes Rebut, que són els que té pendents de pagament el soci
@@ -17,7 +17,7 @@ public String getNom(){ return nom;}
 
 
 
-public void addQuota(Rebut t){ 
+public void addQuota(Rebut t){ // Class Soci.java
 	/* No cal controlar la repetició de rebut 
 	 * 
 	 * TODO Solució Exercici 1.1: addQuota
@@ -28,7 +28,7 @@ public void addQuota(Rebut t){
 	catch(Exception e){}
 }
 
-public void remQuota(Rebut t) throws Exception{
+public void remQuota(Rebut t) throws Exception{ // Class Soci.java
 	/* Llançament d’excepció si el rebut no està al magatzem
 	 * 
 	 * TODO Solució Exercici 1.2: remQuota
@@ -39,8 +39,8 @@ public void remQuota(Rebut t) throws Exception{
 	boolean trobat = false;
 	Cua<Rebut> c = new CuaEnll<Rebut>(); //Cua de support
 	while (!quotes.cuaBuida()){ // Recurregut fins a l'ultim enllaçat
-		Rebut aux= (Rebut)(quotes.desEncuar()); // element desencuat 
-		if (aux.equals(t)) // FORÇAR casting per aplicar el mètode equals redefinit a la classe Rebut
+		Rebut aux= (Rebut)(quotes.desEncuar()); // element desencuat FORÇAR casting 
+		if (aux.equals(t)) // Aplicar el mètode equals redefinit a la classe Rebut
 				trobat=true; // no encuem l'element a la cua de suport
 		else c.encuar(aux); // encuem tots els altres
 	}
@@ -49,7 +49,7 @@ public void remQuota(Rebut t) throws Exception{
 	
 }
 
-public int quantesQuotesPendents(){
+public int quantesQuotesPendents(){ // Class Soci.java
 	/* mètode consultor, el magatzem ha de quedar intacte
 	 * 
 	 * TODO Solució Exercici 1.3: quantesQuotesPendents 
@@ -69,16 +69,16 @@ public int quantesQuotesPendents(){
 }
 
 @Override
-public boolean MenorQue(Comparable c){
+public boolean MenorQue(Comparable<Soci> c){
 	if (c instanceof Soci) return (numeroSoci < ((Soci) c).numeroSoci);
 	else return false; }
-	public boolean MajorQue(Comparable c){
+	public boolean MajorQue(Comparable<Soci> c){
 	if (c instanceof Soci) return (numeroSoci > ((Soci) c).numeroSoci);
 	else return false; 
 }
 
 	
 	public String toString(){
-		return nom;
+		return numeroSoci +" "+ nom;
 	}	
 }

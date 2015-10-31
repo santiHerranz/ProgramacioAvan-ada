@@ -1,8 +1,5 @@
 package ednolineals;
 
-import Exercici22.Equip;
-import edlineals.Cua;
-import edlineals.CuaEnll;
 
 public class NodeA{
 	Comparable inf;
@@ -19,26 +16,5 @@ public class NodeA{
 	public void setInf(Comparable inf) {
 		this.inf = inf;
 	}	
-	
-	
-
-//	void preordre(Cua c){
-//		try{c.encuar(inf);}catch(Exception e){}
-//		if (esq!=null) esq.preordre(c);
-//		if (dret!=null) dret.preordre(c);
-//	}
-//	void postordre(Cua c){
-//		if (esq!=null) esq.postordre(c);
-//		if (dret!=null) dret.postordre(c);
-//		try{c.encuar(inf);}catch(Exception e){}
-//	}
-//	void inordre(Cua c){
-//		if (esq!=null) esq.inordre(c);
-//		try{c.encuar(inf);}catch(Exception e){}
-//		if (dret!=null) dret.inordre(c);
-//	}	
-
-	
-	
 
 }

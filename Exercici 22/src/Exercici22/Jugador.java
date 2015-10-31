@@ -13,7 +13,7 @@ public Jugador(String nom){
 }
 public String getNom(){ return nom;}
 
-public void addNacionalitat(String a) throws Exception{ 
+public void addNacionalitat(String a) throws Exception{ // Class Jugador
 /* ha dafegir una nova nacionalitat al jugador. 
  * Cal controlar la repetició de nacionalitat, en cas de repetició cal llançar una excepció. 
  * També cal controlar la disposició despai dins del magatzem
@@ -55,13 +55,13 @@ private int posicioLliure() {
 
 
 @Override
-public boolean MenorQue(Comparable c){
+public boolean MenorQue(Comparable<Jugador> c){
 	if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)<0);
 	else return false; 
 }
 
 @Override
-public boolean MajorQue(Comparable c){
+public boolean MajorQue(Comparable<Jugador> c){
 	if (c instanceof Jugador) return (nom.compareTo(((Jugador) c).nom)>0);
 	else return false; 
 }
@@ -70,8 +70,9 @@ public boolean MajorQue(Comparable c){
 public String toString(){
 	StringBuilder stringBuilder = new StringBuilder();
 	stringBuilder.append(nom);
-	stringBuilder.append(" ");
-	stringBuilder.append(String.join(",",nacionalitats));
+	//stringBuilder.append(" ");
+	//stringBuilder.append(String.join(",",nacionalitats));
+	stringBuilder.append("\n");
 	return stringBuilder.toString();
 }	
 

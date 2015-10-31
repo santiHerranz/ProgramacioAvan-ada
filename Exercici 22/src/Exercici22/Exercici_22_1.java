@@ -1,5 +1,6 @@
 package Exercici22;
 
+import edlineals.Cua;
 import ednolineals.*;
 
 public class Exercici_22_1 {
@@ -50,8 +51,18 @@ public class Exercici_22_1 {
 //		jugs.Inserir(j2);
 
 		
+		System.out.println("postordre:\n"+ jugs.postordre().toString());
+		System.out.println("inordre:\n"+ jugs.inordre().toString());
+		System.out.println("preordre:\n"+ jugs.preordre().toString());
+		
+		
+		
 		Equip equip2 = new Equip("Segona divisió", jugs, 20);
 		seccio.addEquip(equip2);
+
+		seccio.addEquip(new Equip("Hundred",100));
+		seccio.addEquip(new Equip("Quart",44));
+		seccio.addEquip(new Equip("Tercer",33));
 		
 		equip.addJugador("Messi", "Argentina");
 		
@@ -64,6 +75,26 @@ public class Exercici_22_1 {
 		System.out.println(equip2);
 
 		System.out.println(((AcbEnll)seccio.equips).nomEquipMesJugadors());
+		
+		System.out.println(seccio.trobaNomEquipMajorCodi());
+		
+		
+		Barça barça = new Barça();
+		Soci deleteMe = null;
+		for(int j=0; j<= 10; ++j) {
+			for(int i=1; i<= 10; ++i) {
+				if( j == 5 && i == 5){
+					deleteMe = new Soci(10*j+i, "A"+10*j+i);
+					barça.addSoci(deleteMe);
+				}else {
+					barça.addSoci(new Soci(10*j+i, "A"+10*j+i));
+				}
+			}
+		}
+		if (deleteMe!= null)
+			barça.remSoci(deleteMe); 
+
+		System.out.println(barça);
 	}
 
 }

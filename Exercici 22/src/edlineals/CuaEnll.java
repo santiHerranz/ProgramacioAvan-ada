@@ -1,5 +1,7 @@
 package edlineals;
 
+import java.util.ArrayList;
+
 public class CuaEnll<E> implements Cua<E> {
 
 	
@@ -122,22 +124,22 @@ public class CuaEnll<E> implements Cua<E> {
 
 	public String toString() {
 
-		StringBuilder aux = new StringBuilder();
+		ArrayList<String> aux = new ArrayList<String>();
 
 		if(this.fi == null) return "";
 
 		if(this.fi.seg.equals(this.fi))
-			aux.append(this.fi.inf.toString());
+			aux.add(this.fi.inf.toString());
 		else {
 			Node<E> item = this.fi.seg;
 			while(!item.equals(this.fi)){
-				aux.append(item.inf.toString());
+				aux.add(item.inf.toString());
 				item = item.seg;
 			}
-			aux.append(item.inf.toString());
+			aux.add(item.inf.toString());
 		}
 
-		return aux.toString();
+		return String.join(",", aux);
 	}
 
 // CuaEnll.Clonar
