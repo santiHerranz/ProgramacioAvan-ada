@@ -22,8 +22,9 @@ public class Practica3 {
 //		System.out.println(content);
 		
 		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
+		arbre.setOrdre(AcbRecorrible.ORDRE_DESCENDENT);
 
-		 System.out.println("---FITXER---");
+		System.out.println("---FITXER---");
 
 		StringTokenizer st = new StringTokenizer(content, "():.,; \t\n\r\f");
 	     while (st.hasMoreTokens()) {
@@ -41,13 +42,6 @@ public class Practica3 {
 			System.out.print("\n");
 	     }
 	     
-//	     // TEST: No s’ha invocat el mètode iniInordre
-//	     try {
-//			arbre.segInordre();
-//		} catch (ArbreException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
 		
 			 System.out.println("---ARBRE-----");
 	     
@@ -62,20 +56,90 @@ public class Practica3 {
 			StringTokenizer st2 = new StringTokenizer(exclusion, "():.,; \t\n\r\f");
 		     while (st2.hasMoreTokens()) {
 		         String paraula = st2.nextToken();
-		    	 System.out.println("Excl: "+ paraula);
+		    	 System.out.print("Excl: "+ paraula);
 					try {
-						arbre.esborrar(paraula);
+						boolean done = false;
+						done = arbre.esborrar(paraula);
+						System.out.print(" - eliminat");
 					} catch (ArbreException e) {
+						System.out.print(" ! NO TROBAT");
 						// TODO Auto-generated catch block
 						//e.printStackTrace();
 					}
+					System.out.print("\n");
 		     }
 
 			 System.out.println("---RESULTAT---");
 		     
+			System.out.println("Paraules: "+ arbre.cardinalitat());
 			System.out.println(""+ arbre.toString());
 			
 		
+			 System.out.println("---EXCEPCIONS---");
+			 
+			 
+		     // TEST: No s’ha invocat el mètode iniInordre
+			 arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
+			 Comparable<String> c = null;
+
+			 
+				 System.out.println("---EXCEP 1 ---");
+		        // Inserir
+				try {
+					arbre.inserir("TEST1");
+				} catch (ArbreException e1) {
+				}
+				// Inserir repetit
+				try {
+					arbre.inserir("TEST1");
+				} catch (ArbreException e1) {
+					System.out.println(e1.getMessage());
+				}
+
+				
+				 System.out.println("---EXCEP 2 ---");
+					try {
+						arbre.segInordre();
+					} catch (ArbreException e1) {
+						 System.out.println("No s’ha invocat el mètode iniInordre");
+					}
+
+					
+				 System.out.println("---EXCEP 3 ---");
+				//Buidar
+				arbre.iniInordre();
+				try {
+					while (!arbre.finalInordre()) {
+						c = arbre.segInordre();
+					}	     
+				} catch (ArbreException e) {
+					System.out.println(e.getMessage());
+				}
+				// TODO: el recorregut ja ha finalitzat i no
+				// s’ha tornat a inicialitzar invocant iniInordre
+				// Solució: cridar abans  arbre.iniInordre();
+				try {
+					c = arbre.segInordre();
+				} catch (ArbreException e1) {
+					System.out.println(e1.getMessage());
+				}
+				
+				 System.out.println("---EXCEP 4 ---");
+				// TODO Excepció: l’arbre s’ha modificat abans d’acabar el recorregut
+				try {
+					arbre.inserir("TEST2.1");
+					arbre.inserir("TEST2.2");
+					arbre.inserir("TEST2.3");
+					arbre.iniInordre();
+					c = arbre.segInordre();
+					arbre.inserir("TEST2.4");
+					c = arbre.segInordre();
+
+				} catch (ArbreException e1) {
+					System.out.println(e1.getMessage());
+				}
+		     
+			 
 	}
 
 	

@@ -10,6 +10,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 //	public Cua<E> cua;
 	public Queue<E> cua;
 	
+	private boolean Modificat = false;
+	
 	public static final int ORDRE_ASCENDENT= 1789;
 	public static final int ORDRE_DESCENDENT= -7895;
 	
@@ -21,8 +23,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		this.setOrdre(ordre);
 	}
 	public void setOrdre (int ordre) {
-		if (ordre!=AcbRecorrible.ORDRE_ASCENDENT &&
-		ordre!=AcbRecorrible.ORDRE_DESCENDENT)
+		if (ordre!=AcbRecorrible.ORDRE_ASCENDENT && ordre!=AcbRecorrible.ORDRE_DESCENDENT)
 		throw new IllegalArgumentException("ordre: "+ ordre);
 		this.ordre=ordre;
 		this.cua = null;
@@ -36,6 +37,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		if(cua == null) cua = new LinkedList<E>();
 		if (!cua.isEmpty()) cua.clear();
         cua = this.inordre();
+		Modificat = false;
 	}
 
 	/*
@@ -49,12 +51,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 	 */
 	public boolean finalInordre () {
 		if (this.arrel == null) return true;
-		try {
-			if (this.cua.isEmpty()) return true;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		if (this.cua == null) return true;
+		if (this.cua.isEmpty()) return true;
 		return false;		
 	}
 
@@ -68,7 +66,10 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 	mètode inserir, esborrar, buidar o setOrdre */	
 	public E segInordre () throws ArbreException {
 		if(cua == null) throw new ArbreException("No s’ha invocat el mètode iniInordre");
-		if(finalInordre()) throw new ArbreException("finalInordre");
+		if(finalInordre()) throw new ArbreException("La darrera vegada que es va invocar ja va retornar el darrer element en inordre");
+		if( Modificat == true)
+			 throw new ArbreException("l’arbre s’ha modificat abans d’acabar el recorregut");
+		Modificat = false;
 		try {
 			return cua.poll();
 		} catch (Exception e) {
@@ -139,6 +140,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
     
 	@Override
 	public void inserir(E e) throws ArbreException {
+		Modificat = true;
 		this.arrel = inserirRecursiu(this.arrel, e);
 	}
 	private NodeA<E> inserirRecursiu(NodeA<E> a, E e) throws ArbreException {
@@ -147,7 +149,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		} else {
 			int cmp = e.compareTo(a.inf);
 			if (cmp == 0) 
-				throw new ArbreException("Repetit " + e);
+				throw new ArbreException("Repetit " + e +", un arbre de cerca binari no pot guardar elements repetits.");
 			if (cmp < 0) {
 				a.esq = inserirRecursiu(a.esq, e);
 			} else {
