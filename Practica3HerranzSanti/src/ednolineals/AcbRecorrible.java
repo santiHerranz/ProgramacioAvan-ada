@@ -3,7 +3,6 @@ package ednolineals;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import edlineals.*;
 
 public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implements Acb<E> {
 
@@ -120,16 +119,16 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
     }    
     
 	
-    public Cua<E> preordre() {
-    	Cua<E> c = new CuaEnll<E>();
+    public Queue<E> preordre() {
+    	Queue<E> c = new LinkedList<E>();
         if (arrel != null) {
             arrel.preordre(c);
         }
         return c;
     }
     
-    public Cua<E> postordre() {
-        Cua<E> c = new CuaEnll<E>();
+    public Queue<E> postordre() {
+    	Queue<E> c = new LinkedList<E>();
         if (arrel != null) {
             arrel.postordre(c);
         }

@@ -2,8 +2,6 @@ package ednolineals;
 
 import java.util.Queue;
 
-import edlineals.Cua;
-
 public class AbEnll<E> implements Ab<E> {
 
 
@@ -53,18 +51,18 @@ public class AbEnll<E> implements Ab<E> {
     }
 
     // inf - esq - dre
-    void preordre(Cua<K> c) {
-        try {c.encuar(inf);} catch (Exception ex) { }
+    void preordre(Queue<K> c) {
+        try {c.add(inf);} catch (Exception ex) { }
         if (esq!=null) esq.preordre(c);
         if (dret!=null) dret.preordre(c);
     }
 
     // esq - dret - inf
-    void postordre(Cua<K> c) {
+    void postordre(Queue<K> c) {
         if (esq!=null) esq.postordre(c);
         if (dret!=null) dret.postordre(c);
         try {
-        	c.encuar(inf);
+        	c.add(inf);
         } catch (Exception ex) { }
     }
 
