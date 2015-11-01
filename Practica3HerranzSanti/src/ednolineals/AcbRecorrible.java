@@ -1,10 +1,15 @@
 package ednolineals;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import edlineals.*;
 
 public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implements Acb<E> {
 
 	private int ordre;
+//	public Cua<E> cua;
+	public Queue<E> cua;
 	
 	public static final int ORDRE_ASCENDENT= 1789;
 	public static final int ORDRE_DESCENDENT= -7895;
@@ -21,7 +26,7 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		ordre!=AcbRecorrible.ORDRE_DESCENDENT)
 		throw new IllegalArgumentException("ordre: "+ ordre);
 		this.ordre=ordre;
-		this.cua=null;
+		this.cua = null;
 	}
 	/*
 	 * prepara l’arbre per a ser recorregut en inordre. Després d’invocar
@@ -29,7 +34,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 	 * element en Inordre de l’arbre
 	 */
 	public void iniInordre () {
-		if (!cua.cuaBuida()) cua.buidar();
+		if(cua == null) cua = new LinkedList<E>();
+		if (!cua.isEmpty()) cua.clear();
         cua = this.inordre();
 	}
 
@@ -43,21 +49,16 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 	 * invocar el mètode segInordre     
 	 */
 	public boolean finalInordre () {
-		return false;
-		
-	}
-
-	public E segInordre () throws ArbreException {
-		if(cua.cuaBuida()) throw new ArbreException("Cua buida");
+		if (this.arrel == null) return true;
 		try {
-			return cua.desEncuar();
+			if (this.cua.isEmpty()) return true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
-		
+		return false;		
 	}
+
 	/*retorna el següent element en Inordre, si n’hi ha.
 	llença una excepció si:
 	? abans d’invocar?lo no s’ha invocat el mètode iniInordre
@@ -66,6 +67,16 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 	? s’invoca quan entre la invocació de iniInordre i la del mètode
 	s’ha produït una modificació de l’arbre, això és, s’ha fet ús del
 	mètode inserir, esborrar, buidar o setOrdre */	
+	public E segInordre () throws ArbreException {
+		if(cua == null) throw new ArbreException("No s’ha invocat el mètode iniInordre");
+		if(finalInordre()) throw new ArbreException("finalInordre");
+		try {
+			return cua.poll();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 
@@ -75,21 +86,24 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		return String.format("%d", this.arrel.cardinalitat());
 	}
 
+	
 	// toString realitza un recorregut en inordre
     @Override
     public String toString() {
         String result = new String();
-        Cua<E> c = this.inordre();
-        int i=0;
-        while (!c.cuaBuida()) {
-            try {
-				result += ++i +": "+ ((E)c.desEncuar()).toString() + "\n";
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
-        }
+      
+		 Comparable<E> c = null;
+		 this.iniInordre();
+		 try {
+			int i=0;
+			while (!this.finalInordre()) {
+				c = this.segInordre();
+				result += ++i +": "+ c.toString() + "\n";
+			}	     
+		} catch (ArbreException e) {
+			e.printStackTrace();
+		}
+        
         return result;
     }
 	
@@ -97,8 +111,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
     
   	// Métodes d'un arbre de cerca binari
     
-    public Cua<E> inordre() {
-        Cua<E> c = new CuaEnll<E>();
+    public Queue<E> inordre() {
+    	Queue<E> c = new LinkedList<E>();
         if (arrel != null) {
             arrel.inordre(c);
         }
@@ -133,7 +147,8 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 			a = new NodeA<E>(e);
 		} else {
 			int cmp = e.compareTo(a.inf);
-			if (cmp == 0) throw new ArbreException("Repetit " + e);
+			if (cmp == 0) 
+				throw new ArbreException("Repetit " + e);
 			if (cmp < 0) {
 				a.esq = inserirRecursiu(a.esq, e);
 			} else {
@@ -164,7 +179,10 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
                 d = null; //esborra la referencia
             } else if (d.esq != null && d.dret != null) {
                 // Dos fills
-            	NodeA<E> node = BuscarNodeMinim(d.dret);
+            	NodeA<E> node = d.dret;
+            	while (node.esq != null) {
+            		node = node.esq;
+                }
                 d.inf = node.inf;
                 d.dret = node;
             } else if (d.esq == null){
@@ -176,12 +194,6 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
         return d;
     }	
 
-    private NodeA<E> BuscarNodeMinim(NodeA<E> d) {
-        while (d.esq != null) {
-            d = d.esq;
-        }
-        return d;
-    }    
 
 	@Override
 	public boolean membre(E e) throws ArbreException {

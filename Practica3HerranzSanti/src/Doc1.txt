@@ -9,3 +9,5 @@ available but also their dynamic dimension, that is, data is available as a func
  writing, the angles of the writing device with respect to the horizontal plane and with respect to the vertical 
 axis, and even the trajectories described while not exerting any pressure on the writing surface, when the hand 
 moves in the air while transitioning from one stroke to the next (in-air trajectories made up of pen-up strokes).
+
+acquisition

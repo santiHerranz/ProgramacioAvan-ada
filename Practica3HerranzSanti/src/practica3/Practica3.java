@@ -21,41 +21,60 @@ public class Practica3 {
 		String content = readFile(pathFile);
 //		System.out.println(content);
 		
-		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_DESCENDENT);
-		
+		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
+
+		 System.out.println("---FITXER---");
+
 		StringTokenizer st = new StringTokenizer(content, "():.,; \t\n\r\f");
 	     while (st.hasMoreTokens()) {
 	         String paraula = st.nextToken();
-	    	 //System.out.println(paraula);
+	    	 System.out.print("Doc1: "+ paraula);
 	         if(paraula.length()>=10) {
 	 	 		try {
 					arbre.inserir(paraula.toUpperCase());
+					System.out.print(" + Afegit");
 				} catch (ArbreException e) {
+					System.out.print(" ! REPETIT");
 					//e.printStackTrace();
 				}
 	         }
+			System.out.print("\n");
 	     }
+	     
+//	     // TEST: No s’ha invocat el mètode iniInordre
+//	     try {
+//			arbre.segInordre();
+//		} catch (ArbreException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
+			 System.out.println("---ARBRE-----");
+	     
 			System.out.println("Paraules: "+ arbre.cardinalitat());
+			System.out.print(""+ arbre.toString());
+			
+			 System.out.println("---EXCLUSIO----");
+
+			pathFile = classpathRoot +"\\src\\Excl.txt";
+			String exclusion = readFile(pathFile);
+			
+			StringTokenizer st2 = new StringTokenizer(exclusion, "():.,; \t\n\r\f");
+		     while (st2.hasMoreTokens()) {
+		         String paraula = st2.nextToken();
+		    	 System.out.println("Excl: "+ paraula);
+					try {
+						arbre.esborrar(paraula);
+					} catch (ArbreException e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+		     }
+
+			 System.out.println("---RESULTAT---");
+		     
 			System.out.println(""+ arbre.toString());
 			
-			
-			try {
-				System.out.println("membre HANDWRITING: "+ arbre.membre("HANDWRITING"));
-				System.out.println("membre IDEALITY: "+ arbre.membre("IDEALITY"));
-
-				
-				arbre.esborrar("ACQUISITION");
-				
-				System.out.println("membre ACQUISITION: "+ arbre.membre("ACQUISITION"));
-
-				System.out.println(""+ arbre.toString());
-				
-			} catch (ArbreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
 		
 	}
 

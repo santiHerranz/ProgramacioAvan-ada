@@ -66,6 +66,7 @@ public class CuaEnll<E> implements Cua<E> {
 	@Override
 	public E consulta() throws Exception {
 		if(cuaBuida() == true) throw new Exception("La cua està buida");
+		if(fi.seg.equals(fi)) return fi.inf;
 		return fi.seg.inf;
 	}
 
