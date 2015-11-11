@@ -8,7 +8,7 @@ public class AbEnll<E> implements Ab<E> {
   protected class NodeA<K> {
 	K inf;
 	public NodeA<K> esq, dret;
-	
+
 	protected NodeA() {
 		this(null);
 	}
@@ -20,26 +20,24 @@ public class AbEnll<E> implements Ab<E> {
 		esq = e;
 		dret = d;
 	}
-	
+
 	public int cardinalitat() {
 		int cont = 1;
 		if(this.esq!=null) cont += esq.cardinalitat();
 		if(this.dret!=null) cont += dret.cardinalitat();
 		return cont;
 	}
-	
-	
+
     @Override
     public boolean equals(Object o){
         boolean iguals = false;
         if(o instanceof NodeA){
         	NodeA<K> oo = (NodeA<K>)o;
             //es suposen iguals
-        	iguals = inf.equals(oo.inf);        	
-        } 
+        	iguals = inf.equals(oo.inf);
+        }
         return iguals;
     }
-
 
     //Per poder utilitzar el constructor copia
     @Override
@@ -71,13 +69,12 @@ public class AbEnll<E> implements Ab<E> {
         if(esq!=null)esq.inordre(c);
         try {c.add(inf);} catch (Exception ex) { }
         if(dret!=null)dret.inordre(c);
-    }	
-}	
-	
-	
+    }
+}
+
 	//Atributs
 	protected NodeA<E> arrel; // arrel de l'arbre
-	
+
 	// Constructor
 	public AbEnll(){
 		this.arrel = null;
@@ -94,10 +91,10 @@ public class AbEnll<E> implements Ab<E> {
 		this.arrel.esq = a_esq.arrel;
 		this.arrel.dret = a_dreta.arrel;
 	}
-	
+
 
 	// Métodes d'un arbre
-	
+
 	@Override
 	public E arrel() throws ArbreException {
 		if (this.arrel == null) throw new ArbreException("L'arbre és buit");

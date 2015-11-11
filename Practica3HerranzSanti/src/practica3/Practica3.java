@@ -8,19 +8,16 @@ import java.util.StringTokenizer;
 import ednolineals.*;
 
 public class Practica3 {
-	
-
-	
 
 	public static void main(String[] args) {
 		System.out.println("Practica3");
-		
+
 		String classpathRoot = System.getProperty("user.dir");
 		String pathFile = classpathRoot +"\\src\\Doc1.txt";
 		System.out.println(pathFile);
 		String content = readFile(pathFile);
 //		System.out.println(content);
-		
+
 		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
 
 		System.out.println("---FITXER---");
@@ -40,18 +37,17 @@ public class Practica3 {
 	         }
 			//System.out.print(info+"\n");
 	     }
-	     
-		
+
 			 System.out.println("---ARBRE-----");
-	     
+
 			System.out.println("Paraules: "+ arbre.cardinalitat());
 			System.out.print(""+ arbre.toString());
-			
+
 			 System.out.println("---EXCLUSIO----");
 
 			pathFile = classpathRoot +"\\src\\Excl.txt";
 			String exclusion = readFile(pathFile);
-			
+
 			StringTokenizer st2 = new StringTokenizer(exclusion, "():.,; \t\n\r\f");
 		     while (st2.hasMoreTokens()) {
 		         String paraula = st2.nextToken();
@@ -69,23 +65,21 @@ public class Practica3 {
 		     }
 
 			 System.out.println("---RESULTAT---");
-		     
+
 			System.out.println("Paraules: "+ arbre.cardinalitat());
 
 			// Establir l'ordre lexicogàfic descendent
 			arbre.setOrdre(AcbRecorrible.ORDRE_DESCENDENT);
 
 			System.out.println(""+ arbre.toString());
-			
-		
+
 			 System.out.println("---EXCEPCIONS---");
-			 
-			 
+
 		     // TEST: No s’ha invocat el mètode iniInordre
 			 arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
 			 Comparable<String> c = null;
 
-			 
+
 				 System.out.println("---EXCEP 1 ---");
 		        // Inserir
 				try {
@@ -99,7 +93,7 @@ public class Practica3 {
 					System.out.println(e1.getMessage());
 				}
 
-				
+
 				 System.out.println("---EXCEP 2 ---");
 					try {
 						arbre.segInordre();
@@ -107,14 +101,14 @@ public class Practica3 {
 						 System.out.println("No s’ha invocat el mètode iniInordre abans del métode segInordre");
 					}
 
-					
+
 				 System.out.println("---EXCEP 3 ---");
 				//Buidar
 				arbre.iniInordre();
 				try {
 					while (!arbre.finalInordre()) {
 						c = arbre.segInordre();
-					}	     
+					}
 				} catch (ArbreException e) {
 					System.out.println(e.getMessage());
 				}
@@ -126,7 +120,7 @@ public class Practica3 {
 				} catch (ArbreException e1) {
 					System.out.println(e1.getMessage());
 				}
-				
+
 				 System.out.println("---EXCEP 4 ---");
 				// TODO Excepció: l’arbre s’ha modificat abans d’acabar el recorregut
 				try {
@@ -141,11 +135,8 @@ public class Practica3 {
 				} catch (ArbreException e1) {
 					System.out.println(e1.getMessage());
 				}
-		     
-			 
 	}
 
-	
 	public static String readFile(String filename)
 	{
 	    String content = null;
@@ -165,10 +156,10 @@ public class Practica3 {
 	    			reader.close();
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
-	    		} 
+	    		}
         	}
 	    }
 	    return content;
-	}	
+	}
 
 }
