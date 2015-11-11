@@ -22,24 +22,23 @@ public class Practica3 {
 //		System.out.println(content);
 		
 		AcbRecorrible<String> arbre = new AcbRecorrible<String>(AcbRecorrible.ORDRE_ASCENDENT);
-		arbre.setOrdre(AcbRecorrible.ORDRE_DESCENDENT);
 
 		System.out.println("---FITXER---");
 
 		StringTokenizer st = new StringTokenizer(content, "():.,; \t\n\r\f");
 	     while (st.hasMoreTokens()) {
 	         String paraula = st.nextToken();
-	    	 System.out.print("Doc1: "+ paraula);
+	         String info = "Doc1: "+ paraula;
 	         if(paraula.length()>=10) {
 	 	 		try {
 					arbre.inserir(paraula.toUpperCase());
-					System.out.print(" + Afegit");
+					info += " + Afegit";
 				} catch (ArbreException e) {
-					System.out.print(" ! REPETIT");
+					info += " ! REPETIT";
 					//e.printStackTrace();
 				}
 	         }
-			System.out.print("\n");
+			//System.out.print(info+"\n");
 	     }
 	     
 		
@@ -72,6 +71,10 @@ public class Practica3 {
 			 System.out.println("---RESULTAT---");
 		     
 			System.out.println("Paraules: "+ arbre.cardinalitat());
+
+			// Establir l'ordre lexicogàfic descendent
+			arbre.setOrdre(AcbRecorrible.ORDRE_DESCENDENT);
+
 			System.out.println(""+ arbre.toString());
 			
 		
@@ -101,7 +104,7 @@ public class Practica3 {
 					try {
 						arbre.segInordre();
 					} catch (ArbreException e1) {
-						 System.out.println("No s’ha invocat el mètode iniInordre");
+						 System.out.println("No s’ha invocat el mètode iniInordre abans del métode segInordre");
 					}
 
 					

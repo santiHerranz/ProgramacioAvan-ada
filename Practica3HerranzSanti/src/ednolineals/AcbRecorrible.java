@@ -2,6 +2,7 @@ package ednolineals;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 
 public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implements Acb<E> {
@@ -37,6 +38,14 @@ public class AcbRecorrible<E extends Comparable<E>> extends AcbEnll<E> implement
 		if(cua == null) cua = new LinkedList<E>();
 		if (!cua.isEmpty()) cua.clear();
         cua = this.inordre();
+        Stack<E> pila = new Stack<E>(); 
+        if(this.ordre == AcbRecorrible.ORDRE_DESCENDENT ) {
+        	while (!cua.isEmpty())
+        		pila.push(cua.poll());
+        	while (!pila.isEmpty())
+        		cua.add(pila.pop());
+        }        
+        	
 		Modificat = false;
 	}
 
