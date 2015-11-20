@@ -5,7 +5,7 @@ public class Exercici2 {
 
 	public static void main(String[] args) {
 
-		System.out.println("Exercici2 - Polvorons");
+		System.out.println("Exercici2 - Tècnica del divideix i venç - Polvorons");
 		
 		
 		System.out.println("\n\n**********\nCaixa manual\n**********");
