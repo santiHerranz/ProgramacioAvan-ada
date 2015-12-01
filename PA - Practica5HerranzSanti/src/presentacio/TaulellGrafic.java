@@ -37,7 +37,6 @@ public class TaulellGrafic extends JFrame {
     private static JLabel lblEstat;
     private static JButton btnReset;
     private static JButton btnDesfer;
-    private static JButton btnRefer;
 
     private CasellaGrafica[][] casellesTaulell;
     private ImageIcon imatgeCasella;
@@ -48,12 +47,9 @@ public class TaulellGrafic extends JFrame {
     /*
      * Constructor
      */
-	TaulellGrafic(Joc joc) throws Exception{
+	TaulellGrafic() throws Exception{
 		
-		if(joc == null) throw new Exception("El taulell depén d'un joc");
-		
-		// punt de referencia al joc vinculat
-		this.joc = joc;
+		joc = new Joc();
 		
 		casellesTaulell = new CasellaGrafica[joc.mida][joc.mida];
 		
@@ -112,12 +108,12 @@ public class TaulellGrafic extends JFrame {
 					btnReset.setEnabled(false);
 
 					joc.reset();
-					joc.solucio();
+					String resultat = joc.solucio();
 
 					int total = joc.getSolucio().getMoviment();
 					move = 0;
 					
-					int delayTime = 300;
+					int delayTime = 250;
 					javax.swing.Timer myTimer = new Timer(delayTime, new ActionListener() {
 
 					     @Override
@@ -137,7 +133,9 @@ public class TaulellGrafic extends JFrame {
 										btnDesfer.setEnabled(true);
 										btnSolucio.setEnabled(true);
 										btnReset.setEnabled(true);
-										
+
+										joc.status = resultat;
+						        		refreshGui();
 									}
 									
 								} catch (Exception e1) {
@@ -278,9 +276,8 @@ public class TaulellGrafic extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Joc joc = new Joc();
 					
-					TaulellGrafic window = new TaulellGrafic(joc);
+					TaulellGrafic window = new TaulellGrafic();
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

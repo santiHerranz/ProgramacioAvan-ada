@@ -1,11 +1,11 @@
 package domini;
 
 public class Moviment {
-	Coord coordInici;
-	Coord coordFinal;
-	Coord coordMenjada;
+	int[] coordInici;
+	int[] coordFinal;
+	int[] coordMenjada;
 	
-	Moviment(Coord ini, Coord fin, Coord menja){
+	Moviment(int[] ini, int[] fin, int[] menja){
 		this.coordInici = ini;
 		this.coordFinal = fin;
 		this.coordMenjada = menja;

@@ -4,7 +4,19 @@ public class Solucio {
 
 	private Joc joc;
 	private int moviment = 0;
+	private long iteracions = 0L;
 
+    public long getIteracions() {
+		return iteracions;
+	}
+
+	Solucio(Joc joc){
+		this.joc = joc;
+		
+        for (int i = 0; i < sequencia.length; i++) 
+            sequencia[i] = new Taulell(joc.mida);		
+	}
+    
     /**
      * the solution given as a sequence of board situations
      */
@@ -17,16 +29,6 @@ public class Solucio {
 	public Taulell getSequencia(int move){
 		return sequencia[move];
 	}	    
-
-	
-    Solucio(Joc joc){
-		this.joc = joc;
-		
-        for (int i = 0; i < sequencia.length; i++) 
-            sequencia[i] = new Taulell(joc.mida);		
-		
-	}
-    
 
 	public void guardarTaulell() {
 		sequencia[moviment].setContingut(copiaMatriu(joc.getTaulell().caselles()));
@@ -48,26 +50,27 @@ public class Solucio {
     public boolean trobarSolucio(int mov) throws Exception {
             for (int x = 0; mov <= 31 && x < joc.mida; x++) {
                     for (int y = 0; y < joc.mida; y++) {
-                            for (int direccio : joc.directions) {
-                                    if (saltar(x, y, direccio)) {
-                                    	
-                                    	    joc.historial.guardarMoviment(x, y);
-                                    		guardarTaulell();
-                                    		moviment++;
-                                            
-                                            if (! (mov >= 31 && this.esCasellaOcupada(3, 3))) {
-                                                    if ( trobarSolucio(mov + 1)) {
-                                                            return true;
-                                                    } else {
-                                                    	saltarEnrere(x, y, direccio);
-                                                            
-                                                    	joc.historial.desferUltimMoviment();
-                                                    	moviment--;
-                                                    }
-                                            } else {
-                                                    return true;
-                                            }
-                                    }
+                            for (int direccio : Joc.directions) {
+                            	iteracions++;
+                                if (saltar(x, y, direccio)) {
+                                	
+                                	    joc.historial.guardar(x, y);
+                                		guardarTaulell();
+                                		moviment++;
+                                        
+                                        if (! (mov >= 31 && this.esCasellaOcupada(3, 3))) {
+                                                if ( trobarSolucio(mov + 1)) {
+                                                        return true;
+                                                } else {
+                                                	saltarEnrere(x, y, direccio);
+                                                        
+                                                	joc.historial.desferUltimMoviment();
+                                                	moviment--;
+                                                }
+                                        } else {
+                                                return true;
+                                        }
+                                }
                             }
                     }                       
             }
@@ -100,11 +103,11 @@ public class Solucio {
     
     
     /**
-     * Jumps the peg from (x,y) over the neighbouring peg in the given <code>direction</code>
-     * and removes the peg we have jumped over. 
-     * Returns true if the move was according to the game rules; and false otherwise.
-     * The game board only changes state, if the move was valid.
-     *       */
+     * Salta la fitxa desde (x,y) sobre la fitxa veina amb la direcció donada
+     * i elimina la fitxa que ha saltat per sobre. 
+     * Retorna true si el moviment compleix amb les regles del joc.
+     * El joc només canvia d'estat si el moviment és vàlid.
+     * */
     public boolean saltar(int x, int y, int direccio) {
             int novaX = getNovaX(x, direccio);
             int novaY = getNovaY(y, direccio);
@@ -122,8 +125,7 @@ public class Solucio {
     
 
     /**
-     * A peg "jumps back" and the previously removed peg is returned at
-     * its proper position.
+     * La fitxa salta enrere a la direcció donada i la fitxa menjada torna al seu lloc.
      */
     public void saltarEnrere(int x, int y, int direction) {
             int newX = getNovaX(x, direction);
@@ -169,7 +171,7 @@ public class Solucio {
     }    
     
     /**
-     * Returns true if there is a peg at (x,y).
+     * Retorna cert si hi ha una fitxa a la posició indicada.
      */
     public boolean esCasellaOcupada(int x, int y) {
     	int value = joc.getTaulell().caselles()[x][y];
@@ -196,8 +198,8 @@ public class Solucio {
         }
 
         int i=1;
-        for (Coord c: joc.historial.getllistaMoviments()) {
-            System.out.println(String.format("%d.(%s,%s)", i++, c.x,c.y));
+        for (int[] c: joc.historial.getllistaMoviments()) {
+            System.out.println(String.format("%d.(%s,%s)", i++, c[0],c[1]));
         }
     
     }

@@ -20,18 +20,18 @@ public class Taulell {
 		}
 	}
 	
-	public void setContingut(int x, int y, int value) throws Exception {
-		if ((x < 0 || x > this.mida) || (y < 0 || y > this.mida)) 
+	public void setContingut(int fila, int columna, int value) throws Exception {
+		if (foraLimits(fila, columna))
 			throw new Exception("Error fila i/o columna fora del taullel");
 
-		this.caselles[x][y] = value;
+		this.caselles[fila][columna] = value;
 	}		
 
-	public int getContingut(int x, int y) throws Exception {
-		if ((x < 0 || x > this.mida) || (y < 0 || y > this.mida)) 
+	public int getContingut(int fila, int columna) throws Exception {
+		if (foraLimits(fila, columna))
 			throw new Exception("Error fila i/o columna fora del taullel");
 
-		return this.caselles[x][y];
+		return this.caselles[fila][columna];
 	}	
 
 	public int[][] caselles() {
@@ -41,6 +41,11 @@ public class Taulell {
 	public void setContingut(int[][] contingut){
 		caselles = contingut;
 	}
+	
+	private boolean foraLimits(int fila, int columna) throws Exception{
+		return ((fila < 0 || fila > this.caselles.length) || (columna < 0 || columna > this.caselles.length)); 
+			
+	}	
 
 }
 	
