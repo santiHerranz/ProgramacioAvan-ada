@@ -4,6 +4,7 @@ public class Taulell {
 
 	private int mida = 0;
 	private int[][] caselles; // El taulell és un array de dos dimensions de enters
+
 	
 	/*
 	 * Constructor de taulell
@@ -11,13 +12,30 @@ public class Taulell {
 	public Taulell(int mida) {
 		this.mida = mida;
 		this.caselles = new int[mida][mida];
-
-		//Crear caselles del taulell
-		for (int i = 0; i < this.mida; ++i){
-			for (int j = 0; j < this.mida; ++j){
-				this.caselles[i][j] = Joc.CASELLA_BUIDA;
-			}
-		}
+	}
+	
+	
+	public int getMovimentsPosibles(){
+		return getFitxes()-1;
+	}
+	public int[] getPosicioFinal(){
+        for (int x = 0; x < caselles.length; x++) 
+            for (int y = 0; y < caselles[x].length; y++) {
+                    if( caselles[x][y] == Joc.CASELLA_BUIDA )
+                    	return new int[] {x,y};
+            }
+		return null;
+	}
+	
+	
+	public int getFitxes(){
+		int contador = 0;
+        for (int x = 0; x < caselles.length; x++) 
+            for (int y = 0; y < caselles[x].length; y++) {
+                    if( caselles[x][y] == Joc.CASELLA_OCUPADA || caselles[x][y] == Joc.CASELLA_SELECCIONADA )
+                    	contador++;
+            }
+		return contador;
 	}
 	
 	public void setContingut(int fila, int columna, int value) throws Exception {

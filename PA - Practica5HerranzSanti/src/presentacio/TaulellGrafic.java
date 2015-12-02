@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -25,9 +24,24 @@ import javax.swing.border.LineBorder;
 import domini.Joc;
 
 public class TaulellGrafic extends JFrame {
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					TaulellGrafic window = new TaulellGrafic();
+					window.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	
 	
-    private final Color CASELLA_SEGUENT = Color.GREEN;
     private final Color CASELLA_GRIS = Color.GRAY;
     private final Color CASELLA_BLANCA = Color.WHITE;
     
@@ -43,8 +57,11 @@ public class TaulellGrafic extends JFrame {
     private ImageIcon imatgeCasellaSeleccionada;
     private Joc joc;
 
-	int move = 0;    
-    /*
+	private int animacio = 0;    
+
+	
+	
+	/*
      * Constructor
      */
 	TaulellGrafic() throws Exception{
@@ -86,7 +103,7 @@ public class TaulellGrafic extends JFrame {
 		btnDesfer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					joc.desferUltimMoviment();
+					joc.getHistorial().desferUltimMoviment();
 					refreshGui();
 					lblEstat.setText(String.format("Moviment desfet!") );
 				} catch (Exception ex) {
@@ -107,45 +124,50 @@ public class TaulellGrafic extends JFrame {
 					btnSolucio.setEnabled(false);
 					btnReset.setEnabled(false);
 
+					
+					int moviments_taulell = joc.getTaulell().getMovimentsPosibles();
+					
 					joc.reset();
 					String resultat = joc.solucio();
 
-					int total = joc.getSolucio().getMoviment();
-					move = 0;
+					int moviments_solucio = joc.getSolucio().getMoviment();
+					animacio = 0;
 					
-					int delayTime = 250;
-					javax.swing.Timer myTimer = new Timer(delayTime, new ActionListener() {
+					if(moviments_solucio == moviments_taulell) {
+						int delayTime = 250;
+						javax.swing.Timer myTimer = new Timer(delayTime, new ActionListener() {
 
-					     @Override
-					     public void actionPerformed(ActionEvent e) {
-								try {
-									
-					        		joc.getTaulell().setContingut(joc.getSolucio().getSequencia(move).caselles());
-					        		move++;
+						     @Override
+						     public void actionPerformed(ActionEvent e) {
+									try {
+										
+						        		joc.getTaulell().setContingut(joc.getSolucio().getSequencia(animacio).caselles());
+						        		animacio++;
 
-					        		joc.status = String.format("Reproduint seqüència de solució (%d de %d)", move, total);
+						        		joc.status = String.format("Reproduint seqüència de solució (%d de %d)", animacio, moviments_solucio);
 
-					        		refreshGui();
-									
-									if(move==total) {
-										((Timer)e.getSource()).stop();
-
-										btnDesfer.setEnabled(true);
-										btnSolucio.setEnabled(true);
-										btnReset.setEnabled(true);
-
-										joc.status = resultat;
 						        		refreshGui();
+										
+										if(animacio==moviments_solucio) {
+											((Timer)e.getSource()).stop();
+
+											btnDesfer.setEnabled(true);
+											btnSolucio.setEnabled(true);
+											btnReset.setEnabled(true);
+
+											joc.status = resultat;
+							        		refreshGui();
+										}
+										
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
 									}
-									
-								} catch (Exception e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-					     }
-					  });
-					  myTimer.setRepeats(true);
-					  myTimer.start();
+						     }
+						  });
+						  myTimer.setRepeats(true);
+						  myTimer.start();
+					}
 					
 					
 				} catch (Exception ex) {
@@ -200,35 +222,43 @@ public class TaulellGrafic extends JFrame {
 
 	
 	public void refreshGui() throws Exception{
+		
         int[][] sb = joc.getTaulell().caselles();
 
         // Neteja el taulell i col·loca els números de moviment
-        for (int x = 0; x < sb.length; x++) {
+        for (int x = 0; x < sb.length; x++) 
 			for (int y = 0; y < sb[x].length; y++) {
+				
 				CasellaGrafica cg = this.casellesTaulell[x][y]; 
-				
-				int value = sb[x][y];
-//				if(value != Joc.CASELLA_BUIDA & value != Joc.CASELLA_NO_VALIDA )
-//					cg.setText(String.valueOf(value));
-				//cg.setText(String.valueOf(value));
-				
 				cg.removeAll();
-				
-				ImageIcon image = null;
-				if(value == Joc.CASELLA_OCUPADA)
-					image = imatgeCasella;
-				else if(value == Joc.CASELLA_SELECCIONADA)
-					image = imatgeCasellaSeleccionada;
 
-				if(image!=null) {
-			        cg.add(new JLabel(image));				
-					cg.repaint();
+				boolean showtext = false;
+				boolean showImages = true;
+
+				int value = sb[x][y];
+
+				if(showtext) {
+					if(value != Joc.CASELLA_BUIDA & value != Joc.CASELLA_NO_VALIDA )
+						cg.setText(String.valueOf(value));
+					cg.setText(String.valueOf(value));
+				}
+
+				if(showImages) {
+					ImageIcon image = null;
+
+					if(value == Joc.CASELLA_OCUPADA)
+						image = imatgeCasella;
+					else if(value == Joc.CASELLA_SELECCIONADA)
+						image = imatgeCasellaSeleccionada;
+
+					if(image!=null) {
+				        cg.add(new JLabel(image));				
+						cg.repaint();
+					}
 				}
 			}
-		}
+		
         
-        // Obté la posició actual del cavall i afegeix la imatge del estatus corresponent
-
         // Pinta les caselles
 	    for (int x = 0; x < sb.length; x++) {
 	        Color color = CASELLA_BLANCA;
@@ -252,38 +282,18 @@ public class TaulellGrafic extends JFrame {
         repaint();
 }
 	
+private void casellaClick(CasellaGrafica b){
 	
-
-	
-	private void casellaClick(CasellaGrafica b){
+	try {
+		joc.controladorJoc(b.x, b.y);
+		this.refreshGui();
+	} catch (Exception e) {
+		e.printStackTrace();
 		
-		try {
-			joc.moureFitxa(b.x, b.y);
-			this.refreshGui();
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-			lblEstat.setText(e.getMessage());
-		}		
-	}
+		lblEstat.setText(e.getMessage());
+	}		
+}
 	
 	
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					TaulellGrafic window = new TaulellGrafic();
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 	
 }

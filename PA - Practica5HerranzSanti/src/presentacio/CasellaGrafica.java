@@ -14,14 +14,10 @@ import javax.swing.SwingConstants;
 public class CasellaGrafica extends JButton {
 	private static final long serialVersionUID = 1L;
 
-	
 	public int x;
 	public int y;
 	
-	
-    // create the chess board squares
     Insets buttonMargin = new Insets(0,0,0,0);
-
     
 	CasellaGrafica(int ii, int jj, int w){
 

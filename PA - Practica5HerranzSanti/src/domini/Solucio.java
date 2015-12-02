@@ -2,25 +2,38 @@ package domini;
 
 public class Solucio {
 
-	private Joc joc;
-	private int moviment = 0;
-	private long iteracions = 0L;
+	private Joc joc;				// referència al joc
+	private int moviment = 0;		// contador de moviments
+	private long iteracions = 0L; 	// contador d'iteracions per informació
 
+	private int mov_max = 0;
+	private int posicioFinal[] = null;
+	
     public long getIteracions() {
 		return iteracions;
 	}
+    /**
+     * Guardarem la solució com una seqüència de taulells per poder fer l'animació
+     */
+    private Taulell [] sequencia;
 
+    
 	Solucio(Joc joc){
+		// establir referència al joc
 		this.joc = joc;
 		
+		sequencia = new Taulell[joc.getTaulell().getMovimentsPosibles()];
+
+		// Crear la seqüència de taulells
         for (int i = 0; i < sequencia.length; i++) 
-            sequencia[i] = new Taulell(joc.mida);		
+            sequencia[i] = new Taulell(joc.mida);
+        
+    	mov_max = sequencia.length;
+		posicioFinal = joc.getTaulell().getPosicioFinal();
+		
+        
 	}
     
-    /**
-     * the solution given as a sequence of board situations
-     */
-    private Taulell [] sequencia = new Taulell[31];
 	
 	public Taulell getSequenciaActual(){
 		return sequencia[moviment];
@@ -31,7 +44,7 @@ public class Solucio {
 	}	    
 
 	public void guardarTaulell() {
-		sequencia[moviment].setContingut(copiaMatriu(joc.getTaulell().caselles()));
+		sequencia[moviment++].setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
 	}		
 
 	
@@ -42,145 +55,53 @@ public class Solucio {
 
 	
 	/**
-     * Backtracking algorithm to solve the solitare puzzle
+     * Tècnica Backtracking per resoldre el joc del Continental
      * 
-     * @param mov current number of move, first move must be 1
+     * @param mov moviment actual, començant per 1
      * @throws Exception 
      */
     public boolean trobarSolucio(int mov) throws Exception {
-            for (int x = 0; mov <= 31 && x < joc.mida; x++) {
-                    for (int y = 0; y < joc.mida; y++) {
-                            for (int direccio : Joc.directions) {
-                            	iteracions++;
-                                if (saltar(x, y, direccio)) {
-                                	
-                                	    joc.historial.guardar(x, y);
-                                		guardarTaulell();
-                                		moviment++;
-                                        
-                                        if (! (mov >= 31 && this.esCasellaOcupada(3, 3))) {
-                                                if ( trobarSolucio(mov + 1)) {
-                                                        return true;
-                                                } else {
-                                                	saltarEnrere(x, y, direccio);
-                                                        
-                                                	joc.historial.desferUltimMoviment();
-                                                	moviment--;
-                                                }
-                                        } else {
+    	
+    	
+    	if(posicioFinal== null) return false; // Si no hi ha una posició buida, no hi ha solució posible 
+    	
+        if(mov <= mov_max)										// mentre hi hagin fitxes a moure
+        														// Recorregut:
+        	for (int x = 0; x < joc.mida; x++)					// per totes les files
+                for (int y = 0; y < joc.mida; y++)				// per totes les columnes
+                        for (int direccio : Joc.direccions) {	// per totes les direccions
+                        	iteracions++;
+
+                        	// Calcular nova posició al fer el salt
+                            int novaX = joc.getNovaX(x, direccio);
+                            int novaY = joc.getNovaY(y, direccio);
+                        	
+                        	if (joc.esMovimentAcceptable(x, y, novaX, novaY)) {
+                            	
+                        		joc.ferMoviment(x, y, direccio);
+                            	
+                        	    joc.historial.guardar(x, y);
+                        		guardarTaulell();
+                                
+                        		// Condició de solució 
+                                if ( (mov == mov_max && joc.esCasellaOcupada(posicioFinal[0], posicioFinal[1]))) {
+                                    return true;
+                                } else {
+                                        if ( trobarSolucio(mov + 1)) {  // Crida recursiva al següent moviment
                                                 return true;
+                                        } else {
+                                        	//
+                                        	joc.desferMoviment(x, y, direccio);
+                                        	joc.historial.desferUltimMoviment();
+                                        	moviment--;
                                         }
                                 }
                             }
-                    }                       
-            }
-            
-            return false;
+                        }
+        
+        return false;
     }	
 	
-    
-    
-    
-    /**
-     * Comprova si hi ha fitxa a la casella (x,y)
-     * , està buida la casella (NovaX, NovaY) 
-     * i hi ha una fitxa per saltar entre mig
-     */
-    private boolean esMovimentValid(int x, int y, int novaX, int novaY) {
-            return     0 <= x 
-                    && 0 <= y 
-            		&& x < joc.getTaulell().caselles().length 
-                    && y < joc.getTaulell().caselles()[x].length
-                    && 0 <= novaX 
-                    && 0 <= novaY 
-                    && novaX < joc.getTaulell().caselles().length 
-                    && novaY < joc.getTaulell().caselles()[novaX].length
-                    && esCasellaBuida(novaX,novaY)
-                    && esCasellaOcupada((x + novaX) / 2, (y + novaY) / 2)
-                    && esCasellaOcupada(x,y);
-                    
-    }	
-    
-    
-    /**
-     * Salta la fitxa desde (x,y) sobre la fitxa veina amb la direcció donada
-     * i elimina la fitxa que ha saltat per sobre. 
-     * Retorna true si el moviment compleix amb les regles del joc.
-     * El joc només canvia d'estat si el moviment és vàlid.
-     * */
-    public boolean saltar(int x, int y, int direccio) {
-            int novaX = getNovaX(x, direccio);
-            int novaY = getNovaY(y, direccio);
-
-            if ( esMovimentValid(x, y, novaX, novaY)) {
-                    setFitxa(novaX, novaY);
-                    buidarCasella(x, y);
-                    buidarCasella((x + novaX) / 2, (y + novaY) / 2);
-                    
-                    return true;
-            }
-            
-            return false;
-    }
-    
-
-    /**
-     * La fitxa salta enrere a la direcció donada i la fitxa menjada torna al seu lloc.
-     */
-    public void saltarEnrere(int x, int y, int direction) {
-            int newX = getNovaX(x, direction);
-            int newY = getNovaY(y, direction);
-            
-            buidarCasella(newX, newY);
-            setFitxa(x, y);
-            setFitxa((x + newX) / 2, (y + newY) / 2);
-    }
-    
-    private int getNovaX(int x, int direction) {
-            int newX = x;
-            switch (direction) {
-            case Joc.DRETA: newX += 2;
-                        break;
-            case Joc.ESQUERRA: newX -= 2;
-            }
-            return newX;
-    }
-    
-    private int getNovaY(int y, int direccio) {
-            int novaY = y;
-            
-            switch (direccio) {
-            case Joc.AMUNT: novaY -= 2;
-                            break;
-            case Joc.ABAIX: novaY += 2;
-            }
-            
-            return novaY;
-    } 
-
-
-    public void buidarCasella(int x, int y) {
-    	joc.getTaulell().caselles()[x][y] = Joc.CASELLA_BUIDA;
-    }
-
-    public void setFitxa(int x, int y) {
-    	joc.getTaulell().caselles()[x][y] = Joc.CASELLA_OCUPADA;
-    }    
-    public void setFitxaSeleccionada(int x, int y) {
-    	joc.getTaulell().caselles()[x][y] = Joc.CASELLA_SELECCIONADA;
-    }    
-    
-    /**
-     * Retorna cert si hi ha una fitxa a la posició indicada.
-     */
-    public boolean esCasellaOcupada(int x, int y) {
-    	int value = joc.getTaulell().caselles()[x][y];
-        return  value == Joc.CASELLA_OCUPADA || value == Joc.CASELLA_SELECCIONADA;
-    }    
-    public boolean esCasellaBuida(int x, int y) {
-    	int value = joc.getTaulell().caselles()[x][y];
-        return value == Joc.CASELLA_BUIDA;
-    }   
     
     
     void imprimir() {
@@ -204,15 +125,6 @@ public class Solucio {
     
     }
 
-	public static int[][] copiaMatriu(int[][] input) {
-	    if (input == null)
-	        return null;
-	    int[][] result = new int[input.length][];
-	    for (int r = 0; r < input.length; r++) {
-	        result[r] = input[r].clone();
-	    }
-	    return result;
-	}	
-	
+
     
 }
