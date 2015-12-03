@@ -30,6 +30,7 @@ public class Joc {
 	int[] fitxa_seleccionada = null;
 	Historial historial;
 	Solucio solucio;
+
 	
     /**
      * Taulell amb les posicions inicials de les fitxes
@@ -63,6 +64,12 @@ public class Joc {
 	public Historial getHistorial() {
 		return historial;
 	}
+	public int getMovimentsMaxims() {
+		return 31;
+	}
+	public int[] getPosicioFinal() {
+		return new int[]{3,3};
+	}	
 	
 
 	public Joc(){
@@ -175,8 +182,8 @@ public class Joc {
         long t1 = System.currentTimeMillis();
         
         int inici = 1;
-        if(this.historial.getMoviments()>1)
-        	inici = this.historial.getMoviments();
+        if(this.solucio.getMovimentActual()>1)
+        	inici = this.solucio.getMovimentActual();
         
         if (this.solucio.trobarSolucio(inici)) {
         	long t2 = System.currentTimeMillis();
@@ -335,7 +342,8 @@ public class Joc {
 	        result[r] = input[r].clone();
 	    }
 	    return result;
-	}	
+	}
+
 	
 	
 

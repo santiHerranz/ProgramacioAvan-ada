@@ -18,15 +18,6 @@ public class Taulell {
 	public int getMovimentsPosibles(){
 		return getFitxes()-1;
 	}
-	public int[] getPosicioFinal(){
-        for (int x = 0; x < caselles.length; x++) 
-            for (int y = 0; y < caselles[x].length; y++) {
-                    if( caselles[x][y] == Joc.CASELLA_BUIDA )
-                    	return new int[] {x,y};
-            }
-		return null;
-	}
-	
 	
 	public int getFitxes(){
 		int contador = 0;

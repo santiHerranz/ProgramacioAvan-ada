@@ -6,8 +6,6 @@ public class Solucio {
 	private int moviment = 0;		// contador de moviments
 	private long iteracions = 0L; 	// contador d'iteracions per informació
 
-	private int mov_max = 0;
-	private int posicioFinal[] = null;
 	
     public long getIteracions() {
 		return iteracions;
@@ -28,10 +26,6 @@ public class Solucio {
         for (int i = 0; i < sequencia.length; i++) 
             sequencia[i] = new Taulell(joc.mida);
         
-    	mov_max = sequencia.length;
-		posicioFinal = joc.getTaulell().getPosicioFinal();
-		
-        
 	}
     
 	
@@ -44,12 +38,16 @@ public class Solucio {
 	}	    
 
 	public void guardarTaulell() {
-		sequencia[moviment++].setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
+		sequencia[moviment].setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
+		moviment++;
 	}		
 
 	
 	public int getMoviment(){
 		return sequencia.length;
+	}
+	public int getMovimentActual(){
+		return moviment;
 	}
 	
 
@@ -62,15 +60,17 @@ public class Solucio {
      */
     public boolean trobarSolucio(int mov) throws Exception {
     	
+    	int mov_max = joc.getMovimentsMaxims();
+    	int[] posicioFinal = joc.getPosicioFinal();
     	
-    	if(posicioFinal== null) return false; // Si no hi ha una posició buida, no hi ha solució posible 
-    	
-        if(mov <= mov_max)										// mentre hi hagin fitxes a moure
+        if(mov <= mov_max)						// mentre hi hagin fitxes a moure
         														// Recorregut:
         	for (int x = 0; x < joc.mida; x++)					// per totes les files
                 for (int y = 0; y < joc.mida; y++)				// per totes les columnes
                         for (int direccio : Joc.direccions) {	// per totes les direccions
                         	iteracions++;
+
+                        	if(iteracions%100000000==1) System.out.print(".");
 
                         	// Calcular nova posició al fer el salt
                             int novaX = joc.getNovaX(x, direccio);
@@ -84,7 +84,7 @@ public class Solucio {
                         		guardarTaulell();
                                 
                         		// Condició de solució 
-                                if ( (mov == mov_max && joc.esCasellaOcupada(posicioFinal[0], posicioFinal[1]))) {
+                                if ( mov == mov_max  && joc.esCasellaOcupada(posicioFinal[0], posicioFinal[1])) { //
                                     return true;
                                 } else {
                                         if ( trobarSolucio(mov + 1)) {  // Crida recursiva al següent moviment

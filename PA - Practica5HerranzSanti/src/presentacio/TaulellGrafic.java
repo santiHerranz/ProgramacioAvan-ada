@@ -111,7 +111,7 @@ public class TaulellGrafic extends JFrame {
 				}
 			}
 		});
-
+		btnDesfer.setVisible(false);
 
 
 		
@@ -124,10 +124,10 @@ public class TaulellGrafic extends JFrame {
 					btnSolucio.setEnabled(false);
 					btnReset.setEnabled(false);
 
+					//joc.reset();
 					
 					int moviments_taulell = joc.getTaulell().getMovimentsPosibles();
 					
-					joc.reset();
 					String resultat = joc.solucio();
 
 					int moviments_solucio = joc.getSolucio().getMoviment();
