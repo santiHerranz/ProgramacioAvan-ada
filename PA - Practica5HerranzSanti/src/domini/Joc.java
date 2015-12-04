@@ -1,5 +1,7 @@
 package domini;
 
+import java.util.Arrays;
+
 /**
  * El continental és un joc solitari de taula que consta de 32 peces que es col∙loquen en 
  * un taulell que té forma de creu i que consta de 33 caselles. Al començar el joc es 
@@ -7,23 +9,25 @@ package domini;
  */
 public class Joc {
 	
-	
-    public static final int CASELLA_OCUPADA = 1;
-    public static final int CASELLA_NO_VALIDA = 8;
-    public static final int CASELLA_BUIDA = 0;
-    public static final int CASELLA_SELECCIONADA = 2;
+	/**
+	 * Constants de contingut de la casella
+	 */
+    public static final int CASELLA_OCUPADA = 1,
+    						CASELLA_NO_VALIDA = 8,
+    						CASELLA_BUIDA = 0,
+    						CASELLA_SELECCIONADA = 2;
 
-    public static final int DRETA = 0;
-    public static final int AMUNT = 1;
-    public static final int ESQUERRA = 2;
-    public static final int ABAIX = 3;
+    /**
+     * Constants de moviments
+     */
+    public static final int AMUNT = 0, DRETA = 1, ABAIX = 2, ESQUERRA = 3;
     
     /**
      * Direccions posibles del moviment
      */
-    public static final int [] direccions = {Joc.DRETA, Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX};	
+    public static final int [] direccions_ = {Joc.DRETA, Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX}; // 3.971.396
+    public static final int [] direccions = {Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX, Joc.DRETA}; // 3.970.805
 
-	public int mida = 7;
 	public String status = new String("Estat del joc"); 
 
 	private Taulell taulell;
@@ -31,7 +35,9 @@ public class Joc {
 	Historial historial;
 	Solucio solucio;
 
-	
+	public int getTaulellMida(){
+		return getTaulellInicial().length;
+	}
     /**
      * Taulell amb les posicions inicials de les fitxes
      */
@@ -46,8 +52,49 @@ public class Joc {
                 {8, 8, 1, 1, 1, 8, 8},
                 {8, 8, 1, 1, 1, 8, 8}
 		};
+		int [][] caselles_inicial2 = {
+                {1, 1, 0},
+                {1, 1, 0},
+                {0, 0, 0}
+		};
+		int [][] caselles_inicial3 = {
+                {1, 1, 0, 0},
+                {1, 1, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+		};
 		return caselles_inicial;
 	}
+    /**
+     * Taulell amb les posicions finals de les fitxes
+     */
+	int[][] getTaulellFinal(){
+
+		int [][] caselles_final = {
+                {8, 8, 0, 0, 0, 8, 8},
+                {8, 8, 0, 0, 0, 8, 8},
+                {0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0},
+                {8, 8, 0, 0, 0, 8, 8},
+                {8, 8, 0, 0, 0, 8, 8}
+		};
+		int [][] caselles_final2 = {
+                {0, 0, 0},
+                {0, 0, 0},
+                {0, 0, 1}
+		};
+		
+		int [][] caselles_final3 = {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 1, 0},
+                {0, 0, 0, 0}
+		};		
+		return caselles_final;
+	}
+
+	
 	
 	public Taulell getTaulell() {
 		return taulell;
@@ -64,13 +111,18 @@ public class Joc {
 	public Historial getHistorial() {
 		return historial;
 	}
+	private int mov_max=0;
 	public int getMovimentsMaxims() {
-		return 31;
+		if(mov_max == 0) {
+            for (int x = 0; x < this.taulell.caselles().length; x++) 
+                for (int y = 0; y < this.taulell.caselles()[x].length; y++) 
+                	if(this.taulell.caselles()[x][y] == Joc.CASELLA_OCUPADA)
+                		mov_max++;
+            mov_max--;
+		}
+		return mov_max;
 	}
-	public int[] getPosicioFinal() {
-		return new int[]{3,3};
-	}	
-	
+
 
 	public Joc(){
 		inici();
@@ -82,7 +134,7 @@ public class Joc {
 	
 	private void inici(){
 
-		this.taulell = new Taulell(mida);
+		this.taulell = new Taulell(this.getTaulellMida());
 		this.taulell.setContingut(getTaulellInicial());		
 		this.fitxa_seleccionada = null;
 		
@@ -105,14 +157,14 @@ public class Joc {
 
 		if(c0 == Joc.CASELLA_NO_VALIDA) throw new Exception("Casella no vàlida");
 
-		int[] actual = this.historial.obtenirUltimMoviment();
+		Moviment actual = this.historial.obtenirUltimMoviment();
 		
 		if(fitxa_seleccionada == null) {
 			if( c0 == Joc.CASELLA_OCUPADA) { // AGAFAR FITXA
 				this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
 				fitxa_seleccionada = new int[]{x,y};
 				
-				this.historial.guardar(x,y);
+				this.historial.guardar(x,y, x,y,0,0);
 				System.out.println(String.format("%d. (%s,%s) AGAFAR FITXA", this.historial.getMoviments() , x,y));
 			}
 		} else {
@@ -135,25 +187,26 @@ public class Joc {
 				this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
 				fitxa_seleccionada = new int[]{x,y};
 				
-				this.historial.guardar(x,y);
+				this.historial.guardar(x,y,x,y,0,0);
 				System.out.println(String.format("%d. (%s,%s) DEIXAR I AGAFAR NOVA FITXA", this.historial.getMoviments() , x,y));
 
 			} else if(actual != null) { // MENJAR FITXA
 				
-            	if (this.esMovimentAcceptable(actual[0], actual[1], x, y)) {
+            	if (this.esMovimentAcceptable(actual.coordInici[0], actual.coordInici[1], x, y)) {
 
-            		this.ferMoviment(actual[0], actual[1], x, y);
+            		this.ferMoviment(actual.coordInici[0], actual.coordInici[1], x, y);
             		
-					int xIni = fitxa_seleccionada[0];
-					int yIni = fitxa_seleccionada[1];
+					int xIni = actual.coordInici[0];
+					int yIni = actual.coordInici[1];
 					int xFin = x;
 					int yFin = y;
+			        int xMenja = (x + xFin) / 2;
+			        int yMenja = (y + yFin) / 2;
 					
 					this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
 					fitxa_seleccionada = new int[] {x,y};
 					
-					this.historial.guardar(x,y);
-            		this.solucio.guardarTaulell();
+					this.historial.guardar(actual.coordInici[0], actual.coordInici[1], x,y, xMenja, yMenja);
 					
 					System.out.println(String.format("%d. (%s,%s) MENJAR FITXA ->(%s,%s)", this.historial.getMoviments() , xIni, yIni, xFin, yFin));
 
@@ -177,18 +230,13 @@ public class Joc {
 	 * @return Torna un missatge amb el resultat
 	 * @throws Exception
 	 */
-	public String solucio() throws Exception{
+	public String trobar1Solucio() throws Exception{
 		
         long t1 = System.currentTimeMillis();
         
-        int inici = 1;
-        if(this.solucio.getMovimentActual()>1)
-        	inici = this.solucio.getMovimentActual();
-        
-        if (this.solucio.trobarSolucio(inici)) {
+        if (this.solucio.trobar1Solucio()) {
         	long t2 = System.currentTimeMillis();
                 
-            this.solucio.imprimir();
             return "Solució trobada en " + (t2 - t1) + " milisegons ["+ this.solucio.getIteracions() +" iteracions]" ;
             
         } else {
@@ -197,6 +245,25 @@ public class Joc {
 		
 	}
 
+	/**
+	 * 
+	 * @return Torna un missatge amb el resultat
+	 * @throws Exception
+	 */
+	public String trobar2Solucions() throws Exception{
+		
+        long t1 = System.currentTimeMillis();
+        
+        if (this.solucio.trobar2Solucions()) {
+        	long t2 = System.currentTimeMillis();
+                
+            return "Solució trobada en " + (t2 - t1) + " milisegons ["+ this.solucio.getIteracions() +" iteracions]" ;
+            
+        } else {
+                return "No hi ha solució!!";
+        }		
+		
+	}
 	
 	
 
@@ -343,6 +410,28 @@ public class Joc {
 	    }
 	    return result;
 	}
+
+
+
+
+public static boolean equal(int[][] array1, int[][] array2) {
+
+        if (array1 == null || array2 == null) return false;
+
+    	if (array1.length != array2.length)
+        	  return false;
+      else
+              for (int i = 0; i < array2.length; i++){
+                  if (array1[i].length != array2[i].length) return false;
+                  for (int j = 0; j < array2[i].length; j++) {
+                  if (array2[i][j] != array1[i][j]) {
+                	  return false;    
+                  }                 
+              }
+            }
+        return true;
+    }
+
 
 	
 	

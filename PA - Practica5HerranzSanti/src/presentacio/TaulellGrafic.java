@@ -68,7 +68,7 @@ public class TaulellGrafic extends JFrame {
 		
 		joc = new Joc();
 		
-		casellesTaulell = new CasellaGrafica[joc.mida][joc.mida];
+		casellesTaulell = new CasellaGrafica[joc.getTaulellMida()][joc.getTaulellMida()];
 		
 		this.setBounds(0, 0, 700, 700);
 		
@@ -124,11 +124,11 @@ public class TaulellGrafic extends JFrame {
 					btnSolucio.setEnabled(false);
 					btnReset.setEnabled(false);
 
-					//joc.reset();
+					joc.reset();
 					
-					int moviments_taulell = joc.getTaulell().getMovimentsPosibles();
+					int moviments_taulell = 31;
 					
-					String resultat = joc.solucio();
+					String resultat = joc.trobar1Solucio();
 
 					int moviments_solucio = joc.getSolucio().getMoviment();
 					animacio = 0;
@@ -182,15 +182,15 @@ public class TaulellGrafic extends JFrame {
 		this.getContentPane().add(panel, BorderLayout.CENTER);
 		
 		JPanel chessBoard;
-        chessBoard = new JPanel(new GridLayout(0, 7)); //joc.mida
+        chessBoard = new JPanel(new GridLayout(0, joc.getTaulellMida())); //joc.mida
         chessBoard.setBorder(new LineBorder(Color.BLACK));
     	
 
         // Crea les caselles i les afegeix al taulell
         int w = 80; //this.getSize().width/joc.mida;
         int[][] sb = joc.getTaulell().caselles();
-        for (int ii = 0; ii < joc.mida; ii++) {
-            for (int jj = 0; jj < joc.mida; jj++) {
+        for (int ii = 0; ii < joc.getTaulellMida(); ii++) {
+            for (int jj = 0; jj < joc.getTaulellMida(); jj++) {
 
             	CasellaGrafica b = new CasellaGrafica(ii, jj, w);
             	if(sb[ii][jj] == Joc.CASELLA_NO_VALIDA )

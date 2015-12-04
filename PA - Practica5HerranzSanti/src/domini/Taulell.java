@@ -1,5 +1,7 @@
 package domini;
 
+import java.util.ArrayList;
+
 public class Taulell {
 
 	private int mida = 0;
@@ -16,17 +18,7 @@ public class Taulell {
 	
 	
 	public int getMovimentsPosibles(){
-		return getFitxes()-1;
-	}
-	
-	public int getFitxes(){
-		int contador = 0;
-        for (int x = 0; x < caselles.length; x++) 
-            for (int y = 0; y < caselles[x].length; y++) {
-                    if( caselles[x][y] == Joc.CASELLA_OCUPADA || caselles[x][y] == Joc.CASELLA_SELECCIONADA )
-                    	contador++;
-            }
-		return contador;
+		return 31;
 	}
 	
 	public void setContingut(int fila, int columna, int value) throws Exception {
@@ -54,7 +46,8 @@ public class Taulell {
 	private boolean foraLimits(int fila, int columna) throws Exception{
 		return ((fila < 0 || fila > this.caselles.length) || (columna < 0 || columna > this.caselles.length)); 
 			
-	}	
+	}
+
 
 }
 	
