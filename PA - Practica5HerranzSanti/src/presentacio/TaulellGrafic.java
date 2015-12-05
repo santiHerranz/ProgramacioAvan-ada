@@ -84,7 +84,7 @@ public class TaulellGrafic extends JFrame {
 		btnReset.setIcon(new ImageIcon(classpathRoot+"\\res\\Joc31.png"));
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				joc.setMode(1);
+				joc.setMode(Joc.TAULELL_31_FITXES);
 				doInici();
 			}
 		});
@@ -93,7 +93,7 @@ public class TaulellGrafic extends JFrame {
 		btnReset4.setIcon(new ImageIcon(classpathRoot+"\\res\\Joc4.png"));
 		btnReset4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				joc.setMode(2);
+				joc.setMode(Joc.TAULELL_4_FITXES);
 				doInici();
 			}
 		});
@@ -230,6 +230,7 @@ public class TaulellGrafic extends JFrame {
 
 			btnDesfer.setEnabled(false);
 			btnSolucio.setEnabled(false);
+			btnSolucio2.setEnabled(false);
 			btnReset.setEnabled(false);
 			btnReset4.setEnabled(false);
 			btnMovimentSeguent.setEnabled(false);
@@ -252,13 +253,16 @@ public class TaulellGrafic extends JFrame {
 					        	long t2 = System.currentTimeMillis();
 					        	String iteracions = String.format("%,d",joc.getSolucio().getIteracions());
 					        	joc.status = "("+ n+") solucions trobades en " + (t2 - t1) + " ms ["+ iteracions +" iteracions]" ;
-								animacio = joc.getSolucio().getMoviments()-1;
+
+					        	//animacio = joc.getSolucio().getMoviments()-1;
+					        	doAnimacio();
 
 					        } else {
 					        	joc.status = "No hi ha solució!!";
 					        }
 
 							btnSolucio.setEnabled(true);
+							btnSolucio2.setEnabled(true);
 							btnReset.setEnabled(true);
 			        		refreshGui();
 
@@ -325,6 +329,7 @@ public class TaulellGrafic extends JFrame {
 				isPlaying = true;
 
 				btnSolucio.setEnabled(false);
+				btnSolucio2.setEnabled(false);
 				btnReset4.setEnabled(false);
 				btnReset.setEnabled(false);
 	    		
@@ -349,6 +354,7 @@ public class TaulellGrafic extends JFrame {
 								isPlaying = false;
 
 								btnSolucio.setEnabled(true);
+								btnSolucio2.setEnabled(true);
 								btnReset4.setEnabled(true);
 								btnReset.setEnabled(true);
 							}
@@ -418,6 +424,7 @@ public class TaulellGrafic extends JFrame {
 		btnReset.setEnabled(!isPlaying);
 		btnReset4.setEnabled(!isPlaying);
 		btnSolucio.setEnabled(!isPlaying);
+		btnSolucio2.setEnabled(!isPlaying);
 		btnMovimentAnterior.setEnabled(sol_count>0 && animacio>0 && animacio<=sol_count && !isPlaying);
 		btnMovimentSeguent.setEnabled(sol_count>0 && animacio>=0 &&  animacio<sol_count-1 && !isPlaying);
 		btnAnimacio.setEnabled(sol_count>0 && !isPlaying);

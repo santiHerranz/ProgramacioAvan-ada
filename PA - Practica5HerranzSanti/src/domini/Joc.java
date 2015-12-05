@@ -24,6 +24,8 @@ public class Joc {
      */
     public static final int [] direccions = {Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX, Joc.DRETA}; // 3.970.805
 
+	public static final int TAULELL_31_FITXES = 1, TAULELL_4_FITXES = 4;
+    
 	private int mode;
 	public String status = new String("Estat del joc"); 
 
@@ -44,6 +46,7 @@ public class Joc {
 	
 	public void setMode(int value) {
 		mode = value;
+		inici();
 	}
 	
 	/** Comprova si la situació del taulell es la situació final de la solució
@@ -190,6 +193,9 @@ public class Joc {
 					System.out.println(String.format("%d. (%s,%s) MENJAR FITXA ->(%s,%s)", this.historial.getMoviments() , xIni, yIni, xFin, yFin));
 
 					this.imprimir();
+
+					fitxa_seleccionada = new int[] {x,y};
+					ultim_moviment = new int[] {x,y};
 					
 					if(this.esSolucio()) {
 						this.status = "JOC ACABAT !!!";
@@ -197,22 +203,15 @@ public class Joc {
 						return;
 					}
 					
-					fitxa_seleccionada = new int[] {x,y};
-					ultim_moviment = new int[] {x,y};
 					this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
             	}
 			}
 		}
 
-		String sel = null;
+		String sel = " ";
 		if(fitxa_seleccionada!= null)
 			sel = String.format("[x:%s y:%s]", fitxa_seleccionada[0], fitxa_seleccionada[1]);
-
-		int c1 = this.getTaulell().getContingut(x, y); 
-		status = String.format("Moviment %d. (x:%s y:%s)=%s->%s", this.historial.getMoviments()-1, x, y, c0, c1);
-		if(sel != null) status += " "+ sel;
-		status = " ";
-		
+		status = sel;
 	}
 
 	/**
@@ -275,6 +274,8 @@ public class Joc {
         setFitxa(novaX, novaY);
         buidarCasella(x, y);
         buidarCasella((x + novaX) / 2, (y + novaY) / 2);
+    	historial.ferMoviment(x, y, novaX, novaY);
+        
     }
 
     /**
@@ -287,6 +288,13 @@ public class Joc {
             buidarCasella(newX, newY);
             setFitxa(x, y);
             setFitxa((x + newX) / 2, (y + newY) / 2);
+            try {
+				historial.desferUltimMoviment();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
     }
     
     int getNovaX(int x, int direction) {

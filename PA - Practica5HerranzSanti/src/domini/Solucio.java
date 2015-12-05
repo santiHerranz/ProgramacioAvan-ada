@@ -14,15 +14,25 @@ public class Solucio {
 				try {
 
 					Joc joc = new Joc();
+					joc.setMode(Joc.TAULELL_31_FITXES); //Joc.TAULELL_4_FITXES //Joc.TAULELL_31_FITXES
+					
+					joc.imprimir();
+					
 			        long t1 = System.currentTimeMillis();
-			        
-			        if (joc.solucio.trobarNSolucions(2)) {
+			        int n = 2;
+			        if (joc.solucio.trobarNSolucions(n)) {
+			        	
 			        	long t2 = System.currentTimeMillis();
-			                
-			            System.out.println("Solució trobada en " + (t2 - t1) + " milisegons ["+ joc.solucio.getIteracions() +" iteracions]") ;
+
+			        	System.out.println("");
+						joc.imprimir();
+			        	
+			        	System.out.println("");
+			            System.out.println(String.format(n+ " solucions trobades en " + (t2 - t1) + " ms [%,d iteracions]", joc.solucio.getIteracions())) ;
 			            
 			        } else {
-			        	System.out.println("No hi ha solució!!");
+			        	System.out.println("");
+			        	System.out.println("No hi ha més solucions!!");
 			        }	
 			        
 				} catch (Exception e) {
@@ -31,7 +41,6 @@ public class Solucio {
 			}
 		});
 	}	
-		
 	
 
 	private Joc joc;				// referència al joc
@@ -96,21 +105,17 @@ public class Solucio {
     		System.out.println("SOLUCIÓ "+ contador);
     		System.out.println("***************");
 
-    		//imprimir_sequencia();
-    		joc.historial.imprimir();
-    		
-
         	Taulell it = new Taulell(joc.getTaulellMida());
             it.setContingut(Joc.copiaMatriu(joc.getTaulellInicial()));
             solucio_final.add(it);
         	
     		for (Taulell tt : sequencia)
     			solucio_final.add(tt);	
-        	
-        	if(contador==sol_cont) {
 
-        		//imprimir_solucio();
-        		joc.historial.imprimir();
+    		//imprimir_sequencia();
+    		joc.historial.imprimir();
+    		
+        	if(contador==sol_cont) {
         		
                 return true;
         	} else {
@@ -133,7 +138,6 @@ public class Solucio {
         	        if (joc.esMovimentAcceptable(x, y, novaX, novaY)) {
         	        	
         	        	
-        	        	joc.historial.ferMoviment(novaX, novaY, novaX, novaY);
         	        	joc.ferMoviment(x, y, novaX, novaY); 
 
         	        	// Copiar taulell actual per guardar a la seqüència 
@@ -148,7 +152,6 @@ public class Solucio {
         	            } else {
         	                // That move led to failure :-(
         	                joc.desferMoviment(x, y, direccio);
-        	                joc.historial.desferUltimMoviment();
         	            	sequencia.remove(t);
         	            }
         	        }
@@ -156,28 +159,6 @@ public class Solucio {
         return false;
     }	
 	
-    
-    void imprimir_solucio() {
-        
-        for (int mov = 0; mov < solucio_final.size(); mov++) {
-            int[][] caselles =  solucio_final.get(mov).caselles();
-            System.out.println("int [][] moviment_S"+ (solucio_final.size()-mov) +" = {");
-            for (int x = 0; x < caselles.length; x++) {
-                System.out.print("{");
-                    for (int y = 0; y < caselles[x].length; y++) {
-                            System.out.print(caselles[x][y]);
-                            if(y<caselles[x].length-1)
-                            	System.out.print(",");
-                    }
-                    System.out.print("}");
-                    if(x<caselles.length-1)
-                    	System.out.print(",");
-                	System.out.println();
-            }
-            System.out.println("};");
-            
-        }
-    }
 
     void imprimir_sequencia() {
         
@@ -199,18 +180,6 @@ public class Solucio {
             System.out.println("};");
             
         }
-
-        int i=1;
-        for (Moviment c: joc.historial.getllistaMoviments()) {
-            System.out.println(
-            		String.format("%d. fitxa a moure:(%s,%s)  casella moguda:(%s,%s)   fitxa menjada:(%s,%s)"
-            		, i++
-            		, c.coordInici[0],c.coordInici[1]
-					, c.coordFinal[0],c.coordFinal[1]
-					, c.coordMenjada[0],c.coordMenjada[1]
-            				));
-        }
-    
     }
 
 

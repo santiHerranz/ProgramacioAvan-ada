@@ -47,12 +47,17 @@ public class Historial {
 		return this.historial;
 	}
 
-	public void imprimir(){
+public void imprimir(){
 		
-		int i = 1;
-            for (Moviment m : historial) {
-                System.out.println(i++ +". ("+ m.coordInici[0] + ","+ m.coordInici[1] +")");
-            }
-            System.out.println();
+        int i=1;
+        for (Moviment c: getllistaMoviments()) {
+            System.out.println(
+            		String.format("%d. Salt de (%s,%s) a (%s,%s) i (%s,%s) menjada"
+            		, i++
+            		, c.getCoordInici()[0],c.getCoordInici()[1]
+					, c.getCoordFinal()[0],c.getCoordFinal()[1]
+					, c.getCoordMenjada()[0],c.getCoordMenjada()[1]
+			));
+        }
     }	
 }
