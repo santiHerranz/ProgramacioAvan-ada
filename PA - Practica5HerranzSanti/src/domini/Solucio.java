@@ -2,9 +2,6 @@ package domini;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
 
 public class Solucio {
 	
@@ -19,7 +16,7 @@ public class Solucio {
 					Joc joc = new Joc();
 			        long t1 = System.currentTimeMillis();
 			        
-			        if (joc.solucio.trobarNSolucions(3)) {
+			        if (joc.solucio.trobarNSolucions(2)) {
 			        	long t2 = System.currentTimeMillis();
 			                
 			            System.out.println("Solució trobada en " + (t2 - t1) + " milisegons ["+ joc.solucio.getIteracions() +" iteracions]") ;
@@ -93,7 +90,7 @@ public class Solucio {
     public boolean trobarSolucio(int nivell, int sol_cont) throws Exception {
 
 		// The base case: if it's already solved, we're done
-	    if (Joc.equal(joc.getTaulell().caselles(),joc.getTaulellFinal())){
+	    if (joc.esSolucio()){
 
 	    	System.out.println();
     		System.out.println("SOLUCIÓ "+ contador);

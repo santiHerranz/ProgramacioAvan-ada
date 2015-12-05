@@ -8,10 +8,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -51,19 +48,19 @@ public class TaulellGrafic extends JFrame {
     private static JLabel lblEstat;
     private static JLabel lblAnimacio;
     private static JButton btnReset;
+    private static JButton btnReset4;
     private static JButton btnDesfer;
     private static JButton btnSolucio;
+    private static JButton btnSolucio2;
     private static JButton btnAnimacio;
     private static JButton btnMovimentSeguent;
     private static JButton btnMovimentAnterior;
 
     private CasellaGrafica[][] casellesTaulell;
-    private ImageIcon imatgeCasella;
-    private ImageIcon imatgeCasellaSeleccionada;
     private Joc joc;
 
 	private int animacio = 0;    
-	private boolean isPlaying = false;    
+	private boolean isPlaying = false;
 
 	
 	/*
@@ -79,12 +76,24 @@ public class TaulellGrafic extends JFrame {
 		lblEstat = new JLabel(" ");
 		lblEstat.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEstat.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEstat.setText("Clica sobre el taulell per col·locar el cavall");
 		this.getContentPane().add(lblEstat, BorderLayout.NORTH);
+
+		String classpathRoot = System.getProperty("user.dir");
 		
-		btnReset = new JButton("Inici");
+		btnReset = new JButton("");
+		btnReset.setIcon(new ImageIcon(classpathRoot+"\\res\\Joc31.png"));
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				joc.setMode(1);
+				doInici();
+			}
+		});
+
+		btnReset4 = new JButton("");
+		btnReset4.setIcon(new ImageIcon(classpathRoot+"\\res\\Joc4.png"));
+		btnReset4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				joc.setMode(2);
 				doInici();
 			}
 		});
@@ -98,10 +107,17 @@ public class TaulellGrafic extends JFrame {
 		btnDesfer.setVisible(false);
 
 		
-		btnSolucio = new JButton("Solució");
+		btnSolucio = new JButton("1 Solució");
 		btnSolucio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				doSolucio();
+				doSolucio(1);
+			}
+		});		
+
+		btnSolucio2 = new JButton("2 Solucions");
+		btnSolucio2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				doSolucio(2);
 			}
 		});		
 		
@@ -133,9 +149,13 @@ public class TaulellGrafic extends JFrame {
 		
 		JPanel panel_1 = new JPanel();
 		getContentPane().add(panel_1, BorderLayout.SOUTH);
+		
+		
+		panel_1.add(btnReset4);
 		panel_1.add(btnReset);
 		panel_1.add(btnDesfer);
 		panel_1.add(btnSolucio);
+		panel_1.add(btnSolucio2);
 		panel_1.add(btnMovimentAnterior);
 		panel_1.add(lblAnimacio);
 		panel_1.add(btnMovimentSeguent);
@@ -151,7 +171,7 @@ public class TaulellGrafic extends JFrame {
     	
 
         // Crea les caselles i les afegeix al taulell
-        int w = 80; //this.getSize().width/joc.mida;
+        int w = 75; //this.getSize().width/joc.mida;
         int[][] sb = joc.getTaulell().caselles();
         for (int ii = 0; ii < joc.getTaulellMida(); ii++) {
             for (int jj = 0; jj < joc.getTaulellMida(); jj++) {
@@ -174,12 +194,6 @@ public class TaulellGrafic extends JFrame {
         
         panel.add(chessBoard);
 
-        //Carregar imatges
-		try {
-			imatgeCasella = new ImageIcon(ImageIO.read(new File("res/reddot.png")));
-			imatgeCasellaSeleccionada = new ImageIcon(ImageIO.read(new File("res/reddot_selected.png")));
-		} catch (IOException e) {}
-		
 		refreshGui();
         
 	}
@@ -206,19 +220,22 @@ public class TaulellGrafic extends JFrame {
 	}
 		
 	
-	private void doSolucio() {
+	private void doSolucio(int n) {
+
 		try {
+
 			joc.reset();
 			animacio = 0;
-			joc.status = "Buscant solució...";
+			joc.status = "Buscant "+ n +" solució...";
 
 			btnDesfer.setEnabled(false);
 			btnSolucio.setEnabled(false);
 			btnReset.setEnabled(false);
+			btnReset4.setEnabled(false);
 			btnMovimentSeguent.setEnabled(false);
 			btnMovimentAnterior.setEnabled(false);
 			btnAnimacio.setEnabled(false);
-    		refreshGui();
+			refreshGui();
 
 			int delayTime = 500;
 			javax.swing.Timer myTimer = new Timer(delayTime, new ActionListener() {
@@ -229,24 +246,22 @@ public class TaulellGrafic extends JFrame {
 				        try {
 					        long t1 = System.currentTimeMillis();
 
-					        int n = 2;
 					        joc.trobarNSolucions(n);
 
 					        if (joc.getSolucio().getMoviments()>0) {
 					        	long t2 = System.currentTimeMillis();
 					        	String iteracions = String.format("%,d",joc.getSolucio().getIteracions());
 					        	joc.status = "("+ n+") solucions trobades en " + (t2 - t1) + " ms ["+ iteracions +" iteracions]" ;
+								animacio = joc.getSolucio().getMoviments()-1;
+
 					        } else {
 					        	joc.status = "No hi ha solució!!";
 					        }
 
-			        		joc.getTaulell().setContingut(joc.getTaulellInicial());
-
 							btnSolucio.setEnabled(true);
 							btnReset.setEnabled(true);
 			        		refreshGui();
-				        
-				        
+
 				        } catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -255,9 +270,7 @@ public class TaulellGrafic extends JFrame {
 			});
 			  myTimer.setRepeats(false);
 			  myTimer.start();
-			
 
-			
 		} catch (Exception ex) {
 			lblEstat.setText(ex.getMessage());
 		}		
@@ -297,14 +310,29 @@ public class TaulellGrafic extends JFrame {
 	}
 	
 	private void doAnimacio(){
+		
+
+		
 		int moviments_solucio = joc.getSolucio().getMoviments();
 		
 		if(moviments_solucio>0) {
 			
-			btnMovimentSeguent.setEnabled(false);
-			btnMovimentAnterior.setEnabled(false);
 			
-			animacio = 0;
+			try {
+	    		joc.getTaulell().setContingut(joc.getSolucio().getSequencia(animacio).caselles());
+
+	    		animacio = 0;
+				isPlaying = true;
+
+				btnSolucio.setEnabled(false);
+				btnReset4.setEnabled(false);
+				btnReset.setEnabled(false);
+	    		
+				refreshGui();
+			} catch (Exception e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			
 			int delayTime = 450;
 			javax.swing.Timer myTimer = new Timer(delayTime, new ActionListener() {
@@ -320,12 +348,9 @@ public class TaulellGrafic extends JFrame {
 								((Timer)e.getSource()).stop();
 								isPlaying = false;
 
-								btnMovimentSeguent.setEnabled(true);
-								btnMovimentAnterior.setEnabled(true);
 								btnSolucio.setEnabled(true);
+								btnReset4.setEnabled(true);
 								btnReset.setEnabled(true);
-								btnReset.setEnabled(true);
-
 							}
 			        		refreshGui();
 							
@@ -337,7 +362,6 @@ public class TaulellGrafic extends JFrame {
 			  });
 			  myTimer.setRepeats(true);
 			  myTimer.start();
-			  isPlaying = true;
 		}
 	}
 
@@ -346,40 +370,6 @@ public class TaulellGrafic extends JFrame {
 		
         int[][] sb = joc.getTaulell().caselles();
 
-        // Neteja el taulell i col·loca els números de moviment
-        for (int x = 0; x < sb.length; x++) 
-			for (int y = 0; y < sb[x].length; y++) {
-				
-				CasellaGrafica cg = this.casellesTaulell[x][y]; 
-				cg.removeAll();
-
-				boolean showtext = false;
-				boolean showImages = true;
-
-				int value = sb[x][y];
-
-				if(showtext) {
-					if(value != Joc.CASELLA_BUIDA & value != Joc.CASELLA_NO_VALIDA )
-						cg.setText(String.valueOf(value));
-					cg.setText(String.valueOf(value));
-				}
-
-				if(showImages) {
-					ImageIcon image = null;
-
-					if(value == Joc.CASELLA_OCUPADA)
-						image = imatgeCasella;
-					else if(value == Joc.CASELLA_SELECCIONADA)
-						image = imatgeCasellaSeleccionada;
-
-					if(image!=null) {
-				        cg.add(new JLabel(image));				
-						cg.repaint();
-					}
-				}
-			}
-		
-        
         // Pinta les caselles
 	    for (int x = 0; x < sb.length; x++) {
 	        Color color = CASELLA_BLANCA;
@@ -391,16 +381,42 @@ public class TaulellGrafic extends JFrame {
 					cg.setBackground(CASELLA_GRIS);
 				else
 					cg.setBackground(color);
-				
-				cg.repaint();
 			}
 		}
 
-	    //btnDesfer.setEnabled(joc.moviments()>0); // Es pot deasctivar el botó si no hi ha moviments que desfer
+	    
+        // Neteja el taulell i col·loca els números de moviment
+        for (int x = 0; x < sb.length; x++) 
+			for (int y = 0; y < sb[x].length; y++) {
+				
+				CasellaGrafica cg = this.casellesTaulell[x][y]; 
+				cg.setIcon(null);
+
+				boolean showtext = false; // = true; //
+				boolean showImages = true; // = false; //
+
+				int value = sb[x][y];
+
+				if(showtext) {
+					if(value != Joc.CASELLA_BUIDA & value != Joc.CASELLA_NO_VALIDA )
+						cg.setText(String.valueOf(value));
+					cg.setText(String.valueOf(value));
+				}
+
+				if(showImages) {
+					cg.pintarCasella(value);
+				}
+			}
+		
+        
+
+	    btnDesfer.setEnabled(joc.getHistorial().getMoviments()>0); // Es pot deasctivar el botó si no hi ha moviments que desfer
 		lblEstat.setText(joc.status);
+		
 		
 		int sol_count = joc.getSolucio().getMoviments();
 		btnReset.setEnabled(!isPlaying);
+		btnReset4.setEnabled(!isPlaying);
 		btnSolucio.setEnabled(!isPlaying);
 		btnMovimentAnterior.setEnabled(sol_count>0 && animacio>0 && animacio<=sol_count && !isPlaying);
 		btnMovimentSeguent.setEnabled(sol_count>0 && animacio>=0 &&  animacio<sol_count-1 && !isPlaying);
@@ -411,7 +427,6 @@ public class TaulellGrafic extends JFrame {
 			lblAnimacio.setText("");
 			
 		
-		//tell this JPanel to repaint itself since the ball has moved
         repaint();
 }
 	

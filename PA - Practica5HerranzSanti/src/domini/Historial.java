@@ -1,7 +1,6 @@
 package domini;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class Historial {
 	

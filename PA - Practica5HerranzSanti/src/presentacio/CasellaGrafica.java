@@ -11,19 +11,23 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
+import domini.Joc;
+
 public class CasellaGrafica extends JButton {
 	private static final long serialVersionUID = 1L;
 
 	public int x;
 	public int y;
+	private int w;
 	
     Insets buttonMargin = new Insets(0,0,0,0);
     
-	CasellaGrafica(int ii, int jj, int w){
+	CasellaGrafica(int ii, int jj, int ww){
 
 		//Coordenada
 		this.x = ii;
 		this.y = jj;
+		this.w = ww;
 		
 		// Texte
 		this.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -37,6 +41,22 @@ public class CasellaGrafica extends JButton {
                 new BufferedImage(w, w, BufferedImage.TYPE_INT_ARGB));
         this.setIcon(icon);
 		this.setMargin(buttonMargin);
+	}
+	
+	public void pintarCasella(int mode){
+
+		String classpathRoot = System.getProperty("user.dir");
+
+        if(mode == Joc.CASELLA_BUIDA) {
+    		ImageIcon icon = new ImageIcon(
+                    new BufferedImage(w, w, BufferedImage.TYPE_INT_ARGB));
+            this.setIcon(icon);
+        } else if (mode == Joc.CASELLA_OCUPADA) {
+            this.setIcon(new ImageIcon(classpathRoot+"\\res\\reddot.png"));
+        } else if (mode == Joc.CASELLA_SELECCIONADA) {
+            this.setIcon(new ImageIcon(classpathRoot+"\\res\\reddot_selected.png"));
+        }
+        
 		
 	}
 }

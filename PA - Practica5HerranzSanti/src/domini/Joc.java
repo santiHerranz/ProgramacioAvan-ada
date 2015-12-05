@@ -24,12 +24,34 @@ public class Joc {
      */
     public static final int [] direccions = {Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX, Joc.DRETA}; // 3.970.805
 
+	private int mode;
 	public String status = new String("Estat del joc"); 
 
 	private Taulell taulell;
 	int[] fitxa_seleccionada = null;
+	int[] ultim_moviment = null;
+
 	Historial historial;
 	Solucio solucio;
+	
+
+	
+	
+	public Joc(){
+		inici();
+	}
+	
+	
+	public void setMode(int value) {
+		mode = value;
+	}
+	
+	/** Comprova si la situació del taulell es la situació final de la solució
+	 * @return Cert si es la solució
+	 */
+	public boolean esSolucio(){
+	    return (Joc.equal(this.getTaulell().caselles(),this.getTaulellFinal()));
+	}
 
 	public int getTaulellMida(){
 		return getTaulellInicial().length;
@@ -40,27 +62,29 @@ public class Joc {
 	public int[][] getTaulellInicial(){
 
 		int [][] caselles_inicial = {
-                {8, 8, 1, 1, 1, 8, 8},
-                {8, 8, 1, 1, 1, 8, 8},
-                {1, 1, 1, 1, 1, 1, 1},
-                {1, 1, 1, 0, 1, 1, 1},
-                {1, 1, 1, 1, 1, 1, 1},
-                {8, 8, 1, 1, 1, 8, 8},
-                {8, 8, 1, 1, 1, 8, 8}
+			{8,8,1,1,1,8,8},
+			{8,8,1,1,1,8,8},
+			{1,1,1,1,1,1,1},
+			{1,1,1,0,1,1,1},
+			{1,1,1,1,1,1,1},
+			{8,8,1,1,1,8,8},
+			{8,8,1,1,1,8,8}
 		};
 				
-				int [][] moviment_XS1 = {
-				{8,8,0,0,0,8,8},
-				{8,8,0,1,0,8,8},
-				{0,0,0,1,0,0,0},
-				{0,0,1,1,1,0,0},
-				{0,0,0,0,0,0,0},
-				{8,8,0,0,0,8,8},
-				{8,8,0,0,0,8,8}
-				};				
+		int [][] caselles_inicial_4 = {
+			{8,8,0,0,0,8,8},
+			{8,8,0,1,0,8,8},
+			{0,0,0,1,0,0,0},
+			{0,0,1,1,1,0,0},
+			{0,0,0,0,0,0,0},
+			{8,8,0,0,0,8,8},
+			{8,8,0,0,0,8,8}
+		};				
 				
-				return caselles_inicial;
-//				return moviment_XS1;
+		if(this.mode == 1)
+			return caselles_inicial;
+		else
+			return caselles_inicial_4;
 	}
     /**
      * Taulell amb les posicions finals de les fitxes
@@ -68,13 +92,13 @@ public class Joc {
 	int[][] getTaulellFinal(){
 
 		int [][] caselles_final = {
-                {8, 8, 0, 0, 0, 8, 8},
-                {8, 8, 0, 0, 0, 8, 8},
-                {0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 1, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0},
-                {8, 8, 0, 0, 0, 8, 8},
-                {8, 8, 0, 0, 0, 8, 8}
+			{8,8,0,0,0,8,8},
+			{8,8,0,0,0,8,8},
+			{0,0,0,0,0,0,0},
+			{0,0,0,1,0,0,0},
+			{0,0,0,0,0,0,0},
+			{8,8,0,0,0,8,8},
+			{8,8,0,0,0,8,8}
 		};
 
 		return caselles_final;
@@ -85,34 +109,16 @@ public class Joc {
 	public Taulell getTaulell() {
 		return taulell;
 	}
-	public void setTaulell(Taulell taulell) {
-		this.taulell = taulell;
-	}
+
 	public Solucio getSolucio() {
 		return solucio;
 	}
-	public void setSolucio(Solucio solucio) {
-		this.solucio = solucio;
-	}
+
 	public Historial getHistorial() {
 		return historial;
 	}
-	private int mov_max=0;
-	public int getMovimentsMaxims() {
-		if(mov_max == 0) {
-            for (int x = 0; x < this.taulell.caselles().length; x++) 
-                for (int y = 0; y < this.taulell.caselles()[x].length; y++) 
-                	if(this.taulell.caselles()[x][y] == Joc.CASELLA_OCUPADA)
-                		mov_max++;
-            mov_max--;
-		}
-		return mov_max;
-	}
 
 
-	public Joc(){
-		inici();
-	}
 
 	public void reset(){
 		inici();
@@ -135,76 +141,77 @@ public class Joc {
  */
 	public void controladorJoc( int x, int y) throws Exception {
 		
-		String sel = new String("");
 		int c0 = this.getTaulell().getContingut(x, y); 
-
 		if(c0 == Joc.CASELLA_NO_VALIDA) throw new Exception("Casella no vàlida");
-
-		Moviment actual = this.historial.obtenirUltimMoviment();
 		
 		if(fitxa_seleccionada == null) {
 			if( c0 == Joc.CASELLA_OCUPADA) { // AGAFAR FITXA
 				this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
 				fitxa_seleccionada = new int[]{x,y};
+				ultim_moviment = new int[] {x,y};
 				
-				this.historial.ferMoviment(x,y, x,y);
-				System.out.println(String.format("%d. (%s,%s) AGAFAR FITXA", this.historial.getMoviments() , x,y));
+				System.out.println(String.format("AGAFAR FITXA (%s,%s)", x, y));
 			}
 		} else {
 			
-			
-			if(fitxa_seleccionada[0] == x & fitxa_seleccionada[1] == y) { // DEIXAR FITXA
+			if(fitxa_seleccionada[0] == x && fitxa_seleccionada[1] == y) { // DEIXAR FITXA
+
 				this.getTaulell().setContingut(x, y, Joc.CASELLA_OCUPADA);
 				fitxa_seleccionada = null;
-				this.historial.desferUltimMoviment();
+				ultim_moviment = null;
 
-				System.out.println(String.format("%d. (%s,%s) DEIXAR FITXA", this.historial.getMoviments() , x,y));
+				System.out.println(String.format("DEIXAR FITXA (%s,%s)", x, y));
 
 			} else if((fitxa_seleccionada[0] != x | fitxa_seleccionada[1] != y) 
 					& c0 == Joc.CASELLA_OCUPADA) { // DEIXAR FITXA I AGAFAR NOVA FITXA 
 				
 				this.getTaulell().setContingut(fitxa_seleccionada[0], fitxa_seleccionada[1], Joc.CASELLA_OCUPADA);
 				fitxa_seleccionada = null;
-				this.historial.desferUltimMoviment();
+				ultim_moviment = null;
 
 				this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
 				fitxa_seleccionada = new int[]{x,y};
+				ultim_moviment = new int[] {x,y};
 				
-				this.historial.ferMoviment(x,y,x,y);
 				System.out.println(String.format("%d. (%s,%s) DEIXAR I AGAFAR NOVA FITXA", this.historial.getMoviments() , x,y));
 
-			} else if(actual != null) { // MENJAR FITXA
+			} else if(ultim_moviment != null) { // MENJAR FITXA
 				
-            	if (this.esMovimentAcceptable(actual.coordInici[0], actual.coordInici[1], x, y)) {
+            	if (this.esMovimentAcceptable(ultim_moviment[0], ultim_moviment[1], x, y)) {
 
-            		this.ferMoviment(actual.coordInici[0], actual.coordInici[1], x, y);
+            		this.ferMoviment(ultim_moviment[0], ultim_moviment[1], x, y);
             		
-					int xIni = actual.coordInici[0];
-					int yIni = actual.coordInici[1];
+					int xIni = ultim_moviment[0];
+					int yIni = ultim_moviment[1];
 					int xFin = x;
 					int yFin = y;
-			        int xMenja = (x + xFin) / 2;
-			        int yMenja = (y + yFin) / 2;
-					
-					this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
-					fitxa_seleccionada = new int[] {x,y};
-					
-					this.historial.ferMoviment(actual.coordInici[0], actual.coordInici[1], x,y);
-					
+
+					this.historial.ferMoviment(ultim_moviment[0], ultim_moviment[1], x,y);
 					System.out.println(String.format("%d. (%s,%s) MENJAR FITXA ->(%s,%s)", this.historial.getMoviments() , xIni, yIni, xFin, yFin));
 
 					this.imprimir();
+					
+					if(this.esSolucio()) {
+						this.status = "JOC ACABAT !!!";
+						System.out.println("JOC ACABAT !!!");
+						return;
+					}
+					
+					fitxa_seleccionada = new int[] {x,y};
+					ultim_moviment = new int[] {x,y};
+					this.getTaulell().setContingut(x, y, Joc.CASELLA_SELECCIONADA);
             	}
 			}
-            	
 		}
 
+		String sel = null;
 		if(fitxa_seleccionada!= null)
 			sel = String.format("[x:%s y:%s]", fitxa_seleccionada[0], fitxa_seleccionada[1]);
 
 		int c1 = this.getTaulell().getContingut(x, y); 
 		status = String.format("Moviment %d. (x:%s y:%s)=%s->%s", this.historial.getMoviments()-1, x, y, c0, c1);
-		if(sel!= null) status += " "+ sel;
+		if(sel != null) status += " "+ sel;
+		status = " ";
 		
 	}
 
@@ -224,16 +231,31 @@ public class Joc {
      * Retorna true si el moviment compleix amb aquestes regles del joc.
      */
     boolean esMovimentAcceptable(int x, int y, int novaX, int novaY) {
-            return     
-            		   x >= 0 
-                    && x >= 0
-                    && x < this.getTaulell().caselles().length 
-                    && y < this.getTaulell().caselles()[x].length
-                    && esCasellaOcupada(x,y)								// Casella ha d'estar ocupada
-                    && novaX >= 0 
-                    && novaY >= 0 
-                    && novaX < this.getTaulell().caselles().length 
-                    && novaY < this.getTaulell().caselles()[novaX].length
+    	
+            boolean inside =     
+    		   x >= 0 
+            && x >= 0
+            && x < this.getTaulell().caselles().length 
+            && y < this.getTaulell().caselles()[x].length
+            && novaX >= 0 
+            && novaY >= 0 
+            && novaX < this.getTaulell().caselles().length 
+            && novaY < this.getTaulell().caselles()[novaX].length
+            ;
+
+            boolean validDirection = false;
+        	for (int direccio : Joc.direccions)			// per totes les direccions
+         	{ 
+                int validX = this.getNovaX(x, direccio);
+                int validY = this.getNovaY(y, direccio);    	
+
+                validDirection = (validX == novaX && validY == novaY);
+            	if (validDirection) break;
+         	}
+                    
+            return     inside                     
+                    && validDirection 
+            		&& esCasellaOcupada(x,y)								// Casella ha d'estar ocupada
                     && esCasellaBuida(novaX,novaY) 							// Casella nova ha d'estar buida
             		&& esCasellaOcupada((x + novaX) / 2, (y + novaY) / 2)	// Casella entre mig ha d'estar ocupada
             		;
