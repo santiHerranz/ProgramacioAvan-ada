@@ -17,9 +17,17 @@ public class Solucio {
 				try {
 
 					Joc joc = new Joc();
-					final String resultat = joc.trobar2Solucions();
-		            System.out.println(resultat);
-					
+			        long t1 = System.currentTimeMillis();
+			        
+			        if (joc.solucio.trobarNSolucions(3)) {
+			        	long t2 = System.currentTimeMillis();
+			                
+			            System.out.println("Solució trobada en " + (t2 - t1) + " milisegons ["+ joc.solucio.getIteracions() +" iteracions]") ;
+			            
+			        } else {
+			        	System.out.println("No hi ha solució!!");
+			        }	
+			        
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -30,9 +38,7 @@ public class Solucio {
 	
 
 	private Joc joc;				// referència al joc
-	private int moviment = 0;		// contador de moviments
 	private long iteracions = 0L; 	// contador d'iteracions per informació
-
 	private int contador = 1;
 	
     public long getIteracions() {
@@ -42,6 +48,7 @@ public class Solucio {
      * Guardarem les 2 solució com seqüències de taulells per poder fer veure el resultat
      */
     private ArrayList<Taulell> sequencia;
+    private ArrayList<Taulell> solucio_final;
 
     
 	Solucio(Joc joc){
@@ -49,118 +56,32 @@ public class Solucio {
 		this.joc = joc;
 		
 		sequencia = new ArrayList<Taulell>();
-
+		solucio_final = new ArrayList<Taulell>();
 	}
+	
+
     
+	public ArrayList<Taulell> getSequencia() {
+		return solucio_final;
+	}
 	
 	public Taulell getSequenciaActual(){
-		return sequencia.get(sequencia.size());
+		return solucio_final.get(solucio_final.size());
 	}	
 	
 	public Taulell getSequencia(int move){
-		return sequencia.get(move);
+		return solucio_final.get(move);
 	}	    
-
-	public void guardarTaulell() {
-		
-		Taulell t = null;
-		if (moviment>0 && moviment<sequencia.size()) 
-			t = sequencia.get(moviment);
-		if (t == null) {
-			t = new Taulell(joc.getTaulellMida());
-			sequencia.add(t);
-		}
-		t.setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
-		moviment++;
-	}		
-
-	
-	public int getMoviment(){
-		return sequencia.size();
-	}
-	public int getMovimentActual(){
-		return moviment;
+	public int getMoviments(){
+		return solucio_final.size();
 	}
 
-	public boolean  trobar1Solucio() throws Exception {
 
-//		return trobarSolucio_metode1();
-		return trobarSolucio_metode2(1,1);
+	public boolean trobarNSolucions(int n) throws Exception {
+		sequencia.clear();
+		solucio_final.clear();
+		return trobarSolucio(1,n);
 	}
-		
-	
-	public boolean  trobar2Solucions() throws Exception {
-
-//		return trobarSolucio_metode1();
-		return trobarSolucio_metode2(1,2);
-	}
-	
-
-	private boolean trobarSolucio_metode1() {
-
-		// The base case: if it's already solved, we're done
-	    if (Joc.equal(joc.getTaulell().caselles(),joc.getTaulellFinal()))
-	        return true;
-
-	    // Get all possible moves from this point
-	    ArrayList<int[]> movs = new ArrayList<int[]>();
-    	for (int x = 0; x < joc.getTaulellMida(); x++)
-            for (int y = 0; y < joc.getTaulellMida(); y++) 
-            	if(joc.getTaulell().caselles()[x][y] == Joc.CASELLA_OCUPADA) 
-            		movs.add(new int[]{x,y});
-
-		//Collections.shuffle(movs);
-
-    	int movs_count = movs.size();
-    	
-    	if(iteracions%100000000==1) System.out.print("1");
-    	
-    	
-	    for (int[] movement : movs) 
-	        for (int direccio : Joc.direccions) 	// per totes les direccions
-	    {
-	    	
-        	// Calcular nova posició al fer el salt
-            int novaX = joc.getNovaX(movement[0], direccio);
-            int novaY = joc.getNovaY(movement[1], direccio);
-            
-	        if (joc.esMovimentAcceptable(movement[0], movement[1], novaX, novaY)) {
-	            joc.ferMoviment(movement[0], movement[1], novaX, novaY); 
-
-	            Taulell t = new Taulell(joc.getTaulellMida());
-	            t.setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
-	            sequencia.add(t);
-	            
-	            if (trobarSolucio_metode1()) {
-	                // That move led to success :-)
-//                    return true;
-	            	
-                	if(contador==2) {
-                		System.out.println("***************");
-                		System.out.println("SEGONA SOLUCIÓ");
-                		System.out.println("***************");
-                    	imprimir();
-                    	
-                        return true;
-                	} else {
-                		System.out.println("***************");
-                		System.out.println("PRIMERA SOLUCIÓ");
-                		System.out.println("***************");
-                    	imprimir();
-                		sequencia.clear();;
-                		
-                		contador++;
-                		return false;
-                	}
-	            } else {
-	                // That move led to failure :-(
-	            	sequencia.remove(t);
-	                joc.desferMoviment(movement[0], movement[1], direccio);
-	            }
-	        }
-	    }
-	    return false;
-	}	
 	
 	
 	/**
@@ -169,89 +90,117 @@ public class Solucio {
      * @param mov moviment actual, començant per 1
      * @throws Exception 
      */
-    private boolean trobarSolucio_metode2(int mov, int sol_cont) throws Exception {
+    public boolean trobarSolucio(int nivell, int sol_cont) throws Exception {
+
+		// The base case: if it's already solved, we're done
+	    if (Joc.equal(joc.getTaulell().caselles(),joc.getTaulellFinal())){
+
+	    	System.out.println();
+    		System.out.println("SOLUCIÓ "+ contador);
+    		System.out.println("***************");
+
+    		//imprimir_sequencia();
+    		joc.historial.imprimir();
+    		
+
+        	Taulell it = new Taulell(joc.getTaulellMida());
+            it.setContingut(Joc.copiaMatriu(joc.getTaulellInicial()));
+            solucio_final.add(it);
+        	
+    		for (Taulell tt : sequencia)
+    			solucio_final.add(tt);	
+        	
+        	if(contador==sol_cont) {
+
+        		//imprimir_solucio();
+        		joc.historial.imprimir();
+        		
+                return true;
+        	} else {
+        		contador++;
+                return false;
+        	}	    	
+	    }    	
     	
-        	for (int x = 0; x < joc.getTaulellMida(); x++)					// per totes les files
-        		for (int y = 0; y < joc.getTaulellMida(); y++)				// per totes les columnes
-        			for (int direccio : Joc.direccions)			// per totes les direccions
-                     	{ 
-                        	iteracions++;
+    	for (int x = 0; x < joc.getTaulellMida(); x++)					// per totes les files
+    		for (int y = 0; y < joc.getTaulellMida(); y++)				// per totes les columnes
+    			for (int direccio : Joc.direccions)			// per totes les direccions
+             	{ 
+                	iteracions++;
+                	if(iteracions%100000000==1) System.out.print(".");
 
-                        	if(iteracions%100000000==1) System.out.print("2");
+                	// Calcular nova posició al fer el salt
+                    int novaX = joc.getNovaX(x, direccio);
+                    int novaY = joc.getNovaY(y, direccio);
+                    
+        	        if (joc.esMovimentAcceptable(x, y, novaX, novaY)) {
+        	        	
+        	        	
+        	        	joc.historial.ferMoviment(novaX, novaY, novaX, novaY);
+        	        	joc.ferMoviment(x, y, novaX, novaY); 
 
-                        	// Calcular nova posició al fer el salt
-                            int novaX = joc.getNovaX(x, direccio);
-                            int novaY = joc.getNovaY(y, direccio);
-                        	
-                        	if (joc.esMovimentAcceptable(x, y, novaX, novaY)) {
-                            	
-                        		joc.ferMoviment(x, y, direccio);
-                            	
-                        	    //joc.historial.guardar(x, y, novaX, novaY);
-                	            Taulell t = new Taulell(joc.getTaulellMida());
-                	            t.setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
-                	            sequencia.add(t);
-                                
-                        		// Condició de solució 
-                        		if (Joc.equal(joc.getTaulell().caselles(),joc.getTaulellFinal())) { //
+        	        	// Copiar taulell actual per guardar a la seqüència 
+        	        	Taulell t = new Taulell(joc.getTaulellMida());
+        	            t.setContingut(Joc.copiaMatriu(joc.getTaulell().caselles()));
 
-//                        			 return true;
-                        			
-                                	if(contador==sol_cont) {
-                                		System.out.println("***************");
-                                		System.out.println("    SOLUCIÓ" + contador);
-                                		System.out.println("***************");
-
-                                		imprimir();
-                                    	
-                                        return true;
-                                	} else {
-                                		
-                                		System.out.println("***************");
-                                		System.out.println(" SOLUCIÓ" + contador);
-                                		System.out.println("***************");
-                                    	imprimir();
-                                    	
-                                		sequencia.clear();
-                                        
-                                		contador++;
-                                		
-                                		return false;
-                                	}                               
-                                    
-                                } else {
-                                        if ( trobarSolucio_metode2(mov + 1,sol_cont)) {  // Crida recursiva al següent moviment
-                                                return true;
-                                        } else {
-                                        	//
-                                        	joc.desferMoviment(x, y, direccio);
-                                        	//joc.historial.desferUltimMoviment();
-                                        	sequencia.remove(t);
-                                        }
-                                }
-                            }
-                        }
-        
+        	            sequencia.add(t);
+        	            
+        	            if (trobarSolucio(nivell+1,sol_cont)) { // Crida recursiva
+        	                // That move led to success :-)
+                            return true;
+        	            } else {
+        	                // That move led to failure :-(
+        	                joc.desferMoviment(x, y, direccio);
+        	                joc.historial.desferUltimMoviment();
+        	            	sequencia.remove(t);
+        	            }
+        	        }
+                }
         return false;
     }	
 	
     
-    
-
-    void imprimir() {
+    void imprimir_solucio() {
         
-        for (int mov = 0; mov < sequencia.size(); mov++) {
-            System.out.println(String.format("Moviment %s", mov+1));
-
-            int[][] caselles =  sequencia.get(mov).caselles();
+        for (int mov = 0; mov < solucio_final.size(); mov++) {
+            int[][] caselles =  solucio_final.get(mov).caselles();
+            System.out.println("int [][] moviment_S"+ (solucio_final.size()-mov) +" = {");
             for (int x = 0; x < caselles.length; x++) {
+                System.out.print("{");
                     for (int y = 0; y < caselles[x].length; y++) {
                             System.out.print(caselles[x][y]);
+                            if(y<caselles[x].length-1)
+                            	System.out.print(",");
                     }
-                    System.out.println();
+                    System.out.print("}");
+                    if(x<caselles.length-1)
+                    	System.out.print(",");
+                	System.out.println();
             }
-            System.out.println();
-        	
+            System.out.println("};");
+            
+        }
+    }
+
+    void imprimir_sequencia() {
+        
+        for (int mov = 0; mov < sequencia.size(); mov++) {
+            int[][] caselles =  sequencia.get(mov).caselles();
+            System.out.println("int [][] S"+ contador +"_M"+ (sequencia.size()-mov) +" = {");
+            for (int x = 0; x < caselles.length; x++) {
+                System.out.print("{");
+                    for (int y = 0; y < caselles[x].length; y++) {
+                            System.out.print(caselles[x][y]);
+                            if(y<caselles[x].length-1)
+                            	System.out.print(",");
+                    }
+                    System.out.print("}");
+                    if(x<caselles.length-1)
+                    	System.out.print(",");
+                	System.out.println();
+            }
+            System.out.println("};");
+            
         }
 
         int i=1;
@@ -266,6 +215,8 @@ public class Solucio {
         }
     
     }
+
+
 
 
     

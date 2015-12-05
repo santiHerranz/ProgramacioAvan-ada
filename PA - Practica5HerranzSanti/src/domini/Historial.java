@@ -1,5 +1,6 @@
 package domini;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Historial {
@@ -9,13 +10,15 @@ public class Historial {
 	}
 
 	Historial(){
-		this.historial = new Stack<Moviment>();
+		this.historial = new ArrayList<Moviment>();
 	}
 
-	private Stack<Moviment> historial ;
+    private ArrayList<Moviment> historial;
 	
-	public void guardar(int x, int y, int novaX, int novaY, int menjaX, int menjaY) {
-		historial.push(new Moviment(new int[]{x,y}, new int[]{novaX,novaY}, new int[]{menjaX,menjaY}));
+	public void ferMoviment(int x, int y, int novaX, int novaY) {
+    	int menjaX = (x + novaX) / 2;
+    	int menjaY = (y + novaY) / 2;
+		historial.add(new Moviment(new int[]{x,y}, new int[]{novaX,novaY}, new int[]{menjaX,menjaY}));
 	}
 	
 	/**
@@ -23,10 +26,10 @@ public class Historial {
 	 * @return null quan no hi ha moviments
 	 */
 	public Moviment obtenirUltimMoviment(){
-		if (historial.empty())
+		if (historial.isEmpty())
 			return null;
 		
-		return historial.peek();
+		return historial.get(historial.size()-1);
 	}
 
 	/**
@@ -34,13 +37,23 @@ public class Historial {
 	 * @throws Exception
 	 */
 	public Moviment desferUltimMoviment() throws Exception{
-		if (historial.empty())
+		if (historial.isEmpty())
 			throw new Exception ("Error desfer últim moviment:  no hi ha cap moviment");
-		
-		return historial.pop();
+		Moviment m = obtenirUltimMoviment();
+		historial.remove(m);
+		return m;
 	}
 	
-	public Stack<Moviment> getllistaMoviments(){
+	public ArrayList<Moviment> getllistaMoviments(){
 		return this.historial;
 	}
+
+	public void imprimir(){
+		
+		int i = 1;
+            for (Moviment m : historial) {
+                System.out.println(i++ +". ("+ m.coordInici[0] + ","+ m.coordInici[1] +")");
+            }
+            System.out.println();
+    }	
 }
