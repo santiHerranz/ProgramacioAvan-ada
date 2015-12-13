@@ -30,6 +30,9 @@ public class Continental {
 			            System.out.println(String.format(n+ " solucions trobades en " + (t2 - t1) + " ms [%,d iteracions]", joc.solucio.getIteracions())) ;
 			            
 			        	System.out.println("NOTA: La diferència es troba al moviment 24");
+			        	System.out.println("      Es considera solució diferent encara que siguin els mateixos moviments canviant l'ordre");
+			        	System.out.println("      Segons bibliografia trobada, descartant les rotacions i canvis d'ordre, només hi han dos solucions possibles");
+			        	System.out.println("      http://www.recmath.org/pegsolitaire/diagonal/index.html");
 			            
 			        } else {
 			        	System.out.println("");
