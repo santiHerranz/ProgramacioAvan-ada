@@ -1,24 +1,33 @@
 public class Moviment {
 	
-	private int[] coordInici;
-	private int[] coordFinal;
-	private int[] coordMenjada;
+	private Coordenada coordInici;
+	private Coordenada coordFinal;
+	private Coordenada coordMenjada;
+	
+	private Taulell taulell;
 
-	public int[] getCoordInici() {
+	public Coordenada getInici() {
 		return coordInici;
 	}
 
-	public int[] getCoordFinal() {
+	public Coordenada getFinal() {
 		return coordFinal;
 	}
 
-	public int[] getCoordMenjada() {
+	public Coordenada getMenjada() {
 		return coordMenjada;
 	}
 	
-	Moviment(int[] ini, int[] fin, int[] menja){
+	public Moviment(Coordenada ini, Coordenada fin, Coordenada menja, Taulell t) {
 		this.coordInici = ini;
 		this.coordFinal = fin;
 		this.coordMenjada = menja;
+		this.taulell = t;
 	}
+
+	public Taulell getTaulell() {
+		return taulell;
+	}
+	
+	
 }

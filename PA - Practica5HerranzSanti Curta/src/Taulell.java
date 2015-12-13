@@ -31,6 +31,19 @@ public class Taulell {
 			
 	}
 
+	
+	public void imprimir(){
+		
+            for (int x = 0; x < this.caselles.length; x++) {
+                for (int y = 0; y < this.caselles[x].length; y++) {
+                	if(this.caselles[x][y]== Continental.CASELLA_NO_VALIDA )
+                        System.out.print(" ");
+                	else
+                        System.out.print(this.caselles[x][y]);
+                }
+                System.out.println();
+            }
+    }		
 
 }
 	

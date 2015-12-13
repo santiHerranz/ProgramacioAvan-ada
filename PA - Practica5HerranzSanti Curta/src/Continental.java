@@ -1,36 +1,81 @@
+import java.awt.EventQueue;
+
 /**
+ * PROGRAMACIÓ AVANÇADA - PRÀCTICA 5 - EL CONTINENTAL
  * El continental és un joc solitari de taula que consta de 32 peces que es col∙loquen en 
  * un taulell que té forma de creu i que consta de 33 caselles. Al començar el joc es 
  * col∙loquen totes les peces sobre el taulell deixant una única casella buida, la central
  */
-public class Joc {
+public class Continental {
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+
+					Continental joc = new Continental();
+					//joc.setMode(Continental.TAULELL_4_FITXES); //Proves amb 4 Fitxes
+					
+					joc.imprimir();
+					
+			        long t1 = System.currentTimeMillis();
+
+			        int n = 2; // Número de solucions a trobar
+			        if (joc.solucio.trobarNSolucions(n)) {
+			        	
+			        	long t2 = System.currentTimeMillis();
+
+			        	System.out.println("");
+			        	
+			            System.out.println(String.format(n+ " solucions trobades en " + (t2 - t1) + " ms [%,d iteracions]", joc.solucio.getIteracions())) ;
+			            
+			        	System.out.println("NOTA: La diferència es troba al moviment 24");
+			            
+			        } else {
+			        	System.out.println("");
+			        	System.out.println("No hi ha més solucions!!");
+			        }	
+			        
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}		
 	
 	/**
 	 * Constants de contingut de la casella
 	 */
     public static final int CASELLA_OCUPADA = 1,
     						CASELLA_NO_VALIDA = 8,
-    						CASELLA_BUIDA = 0,
-    						CASELLA_SELECCIONADA = 2;
+    						CASELLA_BUIDA = 0;
     /**
      * Constants de moviments
      */
-    public static final int AMUNT = 0, DRETA = 1, ABAIX = 2, ESQUERRA = 3;
+    public static final int AMUNT = 0, 
+				    		DRETA = 1, 
+				    		ABAIX = 2, 
+				    		ESQUERRA = 3;
     
     /**
-     * Direccions posibles del moviment
+     * Direccions posibles del moviment ordenades
      */
-    public static final int [] direccions = {Joc.AMUNT, Joc.ESQUERRA, Joc.ABAIX, Joc.DRETA}; // 3.970.805
+    public static final int [] direccions = { 
+    		Continental.AMUNT ,
+    		Continental.DRETA , 
+    		Continental.ABAIX , 
+    		Continental.ESQUERRA   
+    		}; // 4.288.329 Iteracions
 
-	public static final int TAULELL_31_FITXES = 1, TAULELL_4_FITXES = 4;
-    
-	private int mode = 0;
+    // Mode de joc: Complert 31 fitxes, Proves amb 4 fitxes
+    public static final int TAULELL_31_FITXES = 1, TAULELL_4_FITXES = 4;
+	private int mode = Continental.TAULELL_31_FITXES;
 
 	private Taulell taulell;
-	Historial historial;
 	Solucio solucio;
+	
 
-	public Joc(){
+	public Continental(){
 		inici();
 	}
 
@@ -43,7 +88,7 @@ public class Joc {
 	 * @return Cert si es la solució
 	 */
 	public boolean esSolucio(){
-	    return (Joc.equal(this.getTaulell().caselles(),this.getTaulellFinal()));
+	    return (Continental.equal(this.getTaulell().caselles(),this.getTaulellFinal()));
 	}
 
 	public int getTaulellMida(){
@@ -74,7 +119,7 @@ public class Joc {
 			{8,8,0,0,0,8,8}
 		};				
 				
-		if(this.mode == Joc.TAULELL_31_FITXES)
+		if(this.mode == Continental.TAULELL_31_FITXES)
 			return caselles_inicial_31;
 		else
 			return caselles_inicial_4;
@@ -96,8 +141,6 @@ public class Joc {
 
 		return caselles_final;
 	}
-
-	
 	
 	public Taulell getTaulell() {
 		return taulell;
@@ -105,10 +148,6 @@ public class Joc {
 	public Solucio getSolucio() {
 		return solucio;
 	}
-	public Historial getHistorial() {
-		return historial;
-	}
-
 
 	public void reset(){
 		inici();
@@ -117,8 +156,7 @@ public class Joc {
 	private void inici(){
 		this.taulell = new Taulell(this.getTaulellMida());
 		this.taulell.setContingut(getTaulellInicial());		
-		
-		this.historial = new Historial();
+
 		this.solucio = new Solucio(this);
 	}
 
@@ -151,7 +189,7 @@ public class Joc {
             ;
 
             boolean validDirection = false;
-        	for (int direccio : Joc.direccions)			// per totes les direccions
+        	for (int direccio : Continental.direccions)			// per totes les direccions
          	{ 
                 int validX = this.getNovaX(x, direccio);
                 int validY = this.getNovaY(y, direccio);    	
@@ -169,15 +207,14 @@ public class Joc {
     }
     
     /**
-     * Salta la fitxa desde la posició indicada sobre la fitxa veina amb la direcció donada
+     * Salta la fitxa desde la posició indicada sobre la fitxa veïna amb la direcció donada
      * i elimina la fitxa que ha saltat per sobre. 
      * */
     void ferMoviment(int x, int y, int novaX, int novaY) {
         setFitxa(novaX, novaY);
         buidarCasella(x, y);
         buidarCasella((x + novaX) / 2, (y + novaY) / 2);
-    	historial.ferMoviment(x, y, novaX, novaY);
-        
+        solucio.ferMoviment(x, y, novaX, novaY);
     }
 
     /**
@@ -192,7 +229,7 @@ public class Joc {
             setFitxa((x + newX) / 2, (y + newY) / 2);
 
             try {
-				historial.desferUltimMoviment();
+				solucio.desferUltimMoviment();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -202,9 +239,9 @@ public class Joc {
     int getNovaX(int x, int direction) {
             int newX = x;
             switch (direction) {
-            case Joc.DRETA: newX += 2;
+            case Continental.DRETA: newX += 2;
                         break;
-            case Joc.ESQUERRA: newX -= 2;
+            case Continental.ESQUERRA: newX -= 2;
             }
             return newX;
     }
@@ -213,9 +250,9 @@ public class Joc {
             int novaY = y;
             
             switch (direccio) {
-            case Joc.AMUNT: novaY -= 2;
+            case Continental.AMUNT: novaY -= 2;
                             break;
-            case Joc.ABAIX: novaY += 2;
+            case Continental.ABAIX: novaY += 2;
             }
             
             return novaY;
@@ -223,11 +260,11 @@ public class Joc {
 
 
     void buidarCasella(int x, int y) {
-    	this.getTaulell().caselles()[x][y] = Joc.CASELLA_BUIDA;
+    	this.getTaulell().caselles()[x][y] = Continental.CASELLA_BUIDA;
     }
 
     void setFitxa(int x, int y) {
-    	this.getTaulell().caselles()[x][y] = Joc.CASELLA_OCUPADA;
+    	this.getTaulell().caselles()[x][y] = Continental.CASELLA_OCUPADA;
     }    
 
     
@@ -236,10 +273,10 @@ public class Joc {
      */
     boolean esCasellaOcupada(int x, int y) {
     	int value = this.getTaulell().caselles()[x][y];
-        return  value == Joc.CASELLA_OCUPADA || value == Joc.CASELLA_SELECCIONADA;
+        return  value == Continental.CASELLA_OCUPADA;
     }    
     boolean esCasellaBuida(int x, int y) {
-        return this.getTaulell().caselles()[x][y] == Joc.CASELLA_BUIDA;
+        return this.getTaulell().caselles()[x][y] == Continental.CASELLA_BUIDA;
     }   
 
 	public void imprimir(){
@@ -247,6 +284,9 @@ public class Joc {
 		
             for (int x = 0; x < caselles.length; x++) {
                 for (int y = 0; y < caselles[x].length; y++) {
+                	if(caselles[x][y]== Continental.CASELLA_NO_VALIDA )
+                        System.out.print(" ");
+                	else
                         System.out.print(caselles[x][y]);
                 }
                 System.out.println();
@@ -254,6 +294,12 @@ public class Joc {
     }	
 
 
+	/**
+	 * Comprovació del contingut casella per casella
+	 * @param array1
+	 * @param array2
+	 * @return
+	 */
 public static boolean equal(int[][] array1, int[][] array2) {
 
         if (array1 == null || array2 == null) return false;
@@ -271,5 +317,15 @@ public static boolean equal(int[][] array1, int[][] array2) {
             }
         return true;
     }
+
+public static int[][] copiaMatriu(int[][] input) {
+    if (input == null)
+        return null;
+    int[][] result = new int[input.length][];
+    for (int r = 0; r < input.length; r++) {
+        result[r] = input[r].clone();
+    }
+    return result;
+}
 
 }
